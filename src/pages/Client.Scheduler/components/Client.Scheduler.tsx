@@ -44,15 +44,15 @@ const ChevronRightIcon: FC<ChevronIconProps> = (props) => {
 export const ClientScheduler: FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentWeek, setCurrentWeek] = useState<Date>(new Date());
-  const [selectedTime, setSelectedTime] = useState<string>("All Day");
+  const [selectedToD, setSelectedToD] = useState<string>("All Day");
   // const currentBusiness =
 
   const handleSelectDate = (date: Date): void => {
     setSelectedDate(date);
   };
 
-  const handleSelectTime = (time: string): void => {
-    setSelectedTime(time);
+  const handleSelectToD = (time: string): void => {
+    setSelectedToD(time);
   };
 
   const handleWeekChange = (direction: "next" | "previous"): void => {
@@ -105,13 +105,13 @@ export const ClientScheduler: FC = () => {
           <Button
             key={time}
             type="button"
-            variant={selectedTime === time ? "default" : "outline"}
-            onClick={() => handleSelectTime(time)}>
+            variant={selectedToD === time ? "default" : "outline"}
+            onClick={() => handleSelectToD(time)}>
             {time}
           </Button>
         ))}
       </div>
-      <TimeGrid selectedTime={selectedTime} />
+      <TimeGrid selectedToD={selectedToD} selectedDate={selectedDate} />
 
       <div className="flex justify-center mt-6">
         <Button variant="default">Continue</Button>
