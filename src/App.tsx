@@ -1,10 +1,10 @@
-import { MobileScheduler } from "./pages/Client.Scheduler/components/MobileScheduler";
+import { ClientScheduler } from "./pages/Client.Scheduler/components/Client.Scheduler";
 
 function App() {
   return (
     <>
       <div className="card">
-        <MobileScheduler />
+        <ClientScheduler />
       </div>
     </>
   );

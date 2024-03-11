@@ -1,5 +1,6 @@
-import React from "react";
-import appointmentTime from "src/pages/Client.Scheduler/services/getAppointments.tsx";
+import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
+import getAppointments from "src/pages/Client.Scheduler/services/getAppointments";
 
 type TimeSlot = {
   label: string;
@@ -11,14 +12,10 @@ type TimeSlots = {
 
 interface TimeGridProps {
   selectedTime: string;
-  setSelectedTime: (time: string) => void;
 }
 
-const TimeGrid: React.FC<TimeGridProps> = ({
-  selectedTime,
-  setSelectedTime,
-}) => {
-  const timeSlots: TimeSlots = {
+const TimeGrid: React.FC<TimeGridProps> = ({ selectedTime }) => {
+  const generateTimeSlots = () => ({
     "All Day": Array.from({ length: 18 }, (_, index) => ({
       label: `${String(8 + Math.floor(index / 2)).padStart(2, "0")}:${
         index % 2 === 0 ? "00" : "30"
@@ -41,19 +38,22 @@ const TimeGrid: React.FC<TimeGridProps> = ({
         18 + index
       ).padStart(2, "0")}:30`,
     })),
-  };
+  });
+
+  const timeSlots: TimeSlots = React.useMemo(generateTimeSlots, []);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
 
   return (
     <>
-      <div
-        className={`mt-4 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2`}>
+      <div className={`mt-4 grid grid-cols-6 gap-2`}>
         {timeSlots[selectedTime]?.map((slot: TimeSlot, index: number) => (
-          <button
+          <Button
             key={index}
-            className="rounded bg-white px-2 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-            onClick={() => setSelectedTime(slot.label)}>
+            size="sm"
+            variant={selectedTimeSlot === slot.label ? "default" : "outline"}
+            onClick={() => setSelectedTimeSlot(slot.label)}>
             {slot.label}
-          </button>
+          </Button>
         ))}
       </div>
     </>

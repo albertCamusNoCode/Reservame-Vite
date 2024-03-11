@@ -1,6 +1,7 @@
 import { addDays, format, startOfWeek, addWeeks } from "date-fns";
 import { SVGProps, useState, FC } from "react";
 import TimeGrid from "./TimeGrid";
+import { Button } from "@/components/ui/button";
 
 interface ChevronIconProps extends SVGProps<SVGSVGElement> {}
 
@@ -40,7 +41,7 @@ const ChevronRightIcon: FC<ChevronIconProps> = (props) => {
   );
 };
 
-export const MobileScheduler: FC = () => {
+export const ClientScheduler: FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentWeek, setCurrentWeek] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string>("All Day");
@@ -68,31 +69,32 @@ export const MobileScheduler: FC = () => {
       <div className="bg-white p-4">
         <p className="mt-2 text-sm text-gray-600">Zürich | Löwenstrasse 16</p>
         <div className="mt-4 flex justify-between">
-          <button className="p-2" onClick={() => handleWeekChange("previous")}>
+          <Button className="p-2" onClick={() => handleWeekChange("previous")}>
             <ChevronLeftIcon className="h-6 w-6" />
-          </button>
+          </Button>
           <div>
             <h2 className="text-center text-lg font-semibold">
               Week of {format(startOfWeek(currentWeek), "EEE, d MMMM")}
             </h2>
           </div>
-          <button className="p-2" onClick={() => handleWeekChange("next")}>
+          <Button className="p-2" onClick={() => handleWeekChange("next")}>
             <ChevronRightIcon className="h-6 w-6" />
-          </button>
+          </Button>
         </div>
         <div className="mt-4 flex overflow-x-auto space-x-4 justify-center">
           {Array.from({ length: 7 }).map((_, index) => {
             const day = addDays(startOfWeek(currentWeek), index);
             return (
-              <button
+              <Button
                 key={index}
-                className={`rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 ${
-                  selectedDate.toDateString() === day.toDateString() &&
-                  "border-gray-800 bg-gray-900 text-white"
-                } hover:bg-gray-800 hover:text-white`}
+                variant={
+                  selectedDate.toDateString() === day.toDateString()
+                    ? "default"
+                    : "outline"
+                }
                 onClick={() => handleSelectDate(day)}>
                 {format(day, "EEE, d MMM")}
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -100,26 +102,19 @@ export const MobileScheduler: FC = () => {
 
       <div className="mt-4 flex flex-wrap justify-center gap-2">
         {["All Day", "Morning", "Afternoon", "Evening"].map((time) => (
-          <button
+          <Button
             key={time}
             type="button"
-            className={`w-full sm:w-auto flex-1 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
- ${
-   selectedTime === time
-     ? "bg-gray-800 text-white"
-     : "bg-gray-100 text-gray-800"
- } hover:bg-primary hover:text-white`}
+            variant={selectedTime === time ? "default" : "outline"}
             onClick={() => handleSelectTime(time)}>
             {time}
-          </button>
+          </Button>
         ))}
       </div>
-      <TimeGrid selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
+      <TimeGrid selectedTime={selectedTime} />
 
-      <div className="mt-6">
-        <button className="w-full sm:w-auto rounded-md bg-white/10 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20">
-          Continue
-        </button>
+      <div className="flex justify-center mt-6">
+        <Button variant="default">Continue</Button>
       </div>
     </>
   );
