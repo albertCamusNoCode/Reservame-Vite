@@ -2,6 +2,7 @@ import { addDays, format, startOfWeek, addWeeks } from "date-fns";
 import { SVGProps, useState, FC } from "react";
 import TimeGrid from "./TimeGrid";
 import { Button } from "@/components/ui/button";
+import { postAppointment } from "../services/postAppointment";
 
 interface ChevronIconProps extends SVGProps<SVGSVGElement> {}
 
@@ -45,7 +46,7 @@ export const ClientScheduler: FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentWeek, setCurrentWeek] = useState<Date>(new Date());
   const [selectedToD, setSelectedToD] = useState<string>("All Day");
-  // const currentBusiness =
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>("");
 
   const handleSelectDate = (date: Date): void => {
     setSelectedDate(date);
@@ -62,6 +63,30 @@ export const ClientScheduler: FC = () => {
         : addWeeks(currentWeek, -1);
     setCurrentWeek(newWeek);
     setSelectedDate(startOfWeek(newWeek));
+  };
+
+  const businessId = "1"; // Example business ID
+
+  const handleContinue = async () => {
+    if (!selectedTimeSlot) {
+      alert("Please select a time slot.");
+      return;
+    }
+
+    // Format the selectedDate and selectedTimeSlot into an ISO string with timezone
+    const startTime = selectedTimeSlot;
+    const appointmentDate = new Date(selectedDate);
+    const [hours, minutes] = startTime.split(":");
+    appointmentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+    const isoDateTime = appointmentDate.toISOString();
+
+    const result = await postAppointment(businessId, isoDateTime);
+    if (result) {
+      alert("Appointment booked successfully.");
+      // Optionally reset state or redirect the user
+    } else {
+    }
   };
 
   return (
@@ -111,10 +136,17 @@ export const ClientScheduler: FC = () => {
           </Button>
         ))}
       </div>
-      <TimeGrid selectedToD={selectedToD} selectedDate={selectedDate} />
+      <TimeGrid
+        selectedToD={selectedToD}
+        selectedDate={selectedDate}
+        selectedTimeSlot={selectedTimeSlot}
+        setSelectedTimeSlot={setSelectedTimeSlot}
+      />
 
       <div className="flex justify-center mt-6">
-        <Button variant="default">Continue</Button>
+        <Button variant="default" onClick={handleContinue}>
+          Continue
+        </Button>
       </div>
     </>
   );

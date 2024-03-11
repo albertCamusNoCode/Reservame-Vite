@@ -14,9 +14,16 @@ type TimeSlots = {
 interface TimeGridProps {
   selectedToD: string;
   selectedDate: Date;
+  selectedTimeSlot: string;
+  setSelectedTimeSlot: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const TimeGrid: React.FC<TimeGridProps> = ({ selectedToD, selectedDate }) => {
+const TimeGrid: React.FC<TimeGridProps> = ({
+  selectedToD,
+  selectedDate,
+  selectedTimeSlot,
+  setSelectedTimeSlot,
+}) => {
   const generateTimeSlots = () => ({
     "All Day": Array.from({ length: 18 }, (_, index) => ({
       label: `${String(8 + Math.floor(index / 2)).padStart(2, "0")}:${
@@ -43,7 +50,6 @@ const TimeGrid: React.FC<TimeGridProps> = ({ selectedToD, selectedDate }) => {
   });
 
   const timeSlots: TimeSlots = React.useMemo(generateTimeSlots, []);
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
   const [appointments, setAppointments] = useState<Appointment[]>([]); // Fixed type to Appointment[]
 
   useEffect(() => {
