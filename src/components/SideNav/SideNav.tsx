@@ -12,8 +12,6 @@ const SideNav = () => {
     <div className="flex items-center justify-between">
       <h1 className="text-xl font-bold">Reservame</h1>
       <DropdownMenu>
-        <Dropdown><h1 className="text-xl font-bold">Reservame</h1></div>
-      <DropdownMenu>
         <DropdownMenuTrigger>Open</DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -21,7 +19,8 @@ const SideNav = () => {
           <DropdownMenuItem>Profile</DropdownMenuItem>
           <DropdownMenuItem>Billing</DropdownMenuItem>
           <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuItem>Logout</DropdownMenuSideNav     </DropdownMenuContent>
+          <DropdownMenuItem>Logout</DropdownMenuItem>
+        </DropdownMenuContent>
       </DropdownMenu>
     </div>
   );
