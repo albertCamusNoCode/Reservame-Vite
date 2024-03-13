@@ -1,4 +1,4 @@
-import { ClientScheduler } from "./pages/Client.Scheduler/components/Client.Scheduler";
+import { ClientScheduler } from "./components/scheduler/Client.Scheduler";
 
 function App() {
   return (

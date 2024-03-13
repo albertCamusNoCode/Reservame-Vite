@@ -1,6 +1,6 @@
 import { addDays, format, startOfWeek, addWeeks } from "date-fns";
 import { SVGProps, useState, FC } from "react";
-import TimeGrid from "./TimeGrid";
+import TimeGrid from "../TimeGrid/TimeGrid";
 import { Button } from "@/components/ui/button";
 import { postAppointment } from "../services/postAppointment";
 

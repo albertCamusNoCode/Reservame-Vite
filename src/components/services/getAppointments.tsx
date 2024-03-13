@@ -1,4 +1,4 @@
-import { supabase } from "../../../services/supabaseClient";
+import { supabase } from "../../services/supabaseClient";
 import { Appointment } from "./types"; // Import the unified Appointment type
 
 export async function getAppointments(
