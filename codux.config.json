@@ -1,0 +1,20 @@
+{
+  "boardGlobalSetup": "./src/boards-global-setup.ts",
+  "newComponent": {
+    "componentsPath": "src/components",
+    "templatesPath": "src/_codux/component-templates"
+  },
+  "safeRender": {
+    "maxInstancesPerComponent": 1000
+  },
+  "scripts": {
+    "install": {
+      "title": "Install",
+      "description": "Run install",
+      "command": "npm i",
+      "trigger": ["checkout", "pull", "setup"]
+    }
+  },
+  "styling": { "solution": "css" },
+  "svgLoader": "both"
+}
