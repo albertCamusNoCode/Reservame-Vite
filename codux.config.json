@@ -1,8 +1,8 @@
 {
-  "boardGlobalSetup": "./src/boards-global-setup.ts",
+  "boardGlobalSetup": "./src/_codux/boards-global-setup.ts",
   "newComponent": {
-    "componentsPath": "src/components",
-    "templatesPath": "src/_codux/component-templates"
+    "componentsPath": "./src/components",
+    "templatesPath": "./src/_codux/component-templates"
   },
   "safeRender": {
     "maxInstancesPerComponent": 1000
