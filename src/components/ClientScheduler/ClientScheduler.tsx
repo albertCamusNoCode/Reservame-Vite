@@ -91,14 +91,14 @@ export const ClientScheduler: FC = () => {
 
   return (
     <>
-      <div className="bg-white p-4">
+      <div className="bg-white p-4 flex flex-col">
         <p className="mt-2 text-sm text-gray-600">Zürich | Löwenstrasse 16</p>
-        <div className="mt-4 flex justify-between">
+        <div className="mt-4 flex justify-between items-center">
           <Button className="p-2" onClick={() => handleWeekChange("previous")}>
             <ChevronLeftIcon className="h-6 w-6" />
           </Button>
-          <div>
-            <h2 className="text-center text-lg font-semibold">
+          <div className="text-center">
+            <h2 className="text-lg font-semibold">
               Week of {format(startOfWeek(currentWeek), "EEE, d MMMM")}
             </h2>
           </div>

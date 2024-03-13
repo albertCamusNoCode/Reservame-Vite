@@ -1,7 +1,9 @@
+import { ClientScheduler } from "./components/ClientScheduler/ClientScheduler";
+
 function App() {
   return (
     <>
-      <div className="card"></div>
+      <ClientScheduler />
     </>
   );
 }
