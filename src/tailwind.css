@@ -51,7 +51,7 @@
 
 @layer base {
   * {
-    @apply border-border;color: #AC8B8B;background-color: #300909;
+    @apply border-border;
   }
   body {
     @apply bg-background text-foreground;

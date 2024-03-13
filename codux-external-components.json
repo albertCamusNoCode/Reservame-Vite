@@ -3,12 +3,12 @@
     "name": "Radix Components",
     "components": [
       {
-        "filePath": "./src/components/ui/button",
+        "filePath": "src/components/ui/button.tsx",
         "exportName": "default",
         "name": "button"
       },
       {
-        "filePath": "./src/components/ui/dropdown-menu",
+        "filePath": "src/components/ui/dropdown-menu.tsx",
         "exportName": "default",
         "name": "dropdown-menu"
       }
