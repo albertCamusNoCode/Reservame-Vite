@@ -1,15 +1,22 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { account, ID } from "./lib/appwrite";
 
-const App = () => {
-  const [loggedInUser, setLoggedInUser] = useState(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+interface User {
+  name: string;
+}
 
-  async function login(email, password) {
+const App = () => {
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [name, setName] = useState<string>("");
+
+  async function login(email: string, password: string) {
     await account.createEmailSession(email, password);
-    setLoggedInUser(await account.get());
+    const user = await account.get();
+    if (user) {
+      setLoggedInUser(user as User);
+    }
   }
 
   return (
