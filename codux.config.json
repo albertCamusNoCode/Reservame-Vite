@@ -23,6 +23,7 @@
       "trigger": ["checkout", "pull", "setup"]
     }
   },
+  "httpServerPort": 3000,
   "styling": { "solution": "css" },
   "svgLoader": "both"
 }

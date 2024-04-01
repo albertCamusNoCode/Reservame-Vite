@@ -1,7 +1,7 @@
-import SignupLogin from "./components/Signup-Login/SignupLogin";
+import Signup from "./components/Signup/Signup";
 
 const App = () => {
-  return <SignupLogin />;
+  return <Signup />;
 };
 
 export default App;
