@@ -1,11 +1,7 @@
 {
   "$schema": "https://wixplosives.github.io/codux-config-schema/codux.config.schema.json",
   "previewConfiguration": {
-    "environmentVariables": {
-      "VITE_CLERK_PUBLISHABLE_KEY": "pk_test_aGFwcHktcHVwLTg2LmNsZXJrLmFjY291bnRzLmRldiQ",
-      "VITE_SUPABASE_URL": "https://dlziynapzdavkuymwnaf.supabase.co",
-      "VITE_SUPABASE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRseml5bmFwemRhdmt1eW13bmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODk4MTIyODcsImV4cCI6MjAwNTM4ODI4N30.2KSP4NV57USOcppLecT167am0zYGRsChQklcKkpDIiM"
-    }
+    "environmentVariables": {}
   },
   "boardGlobalSetup": "./src/_codux/boards-global-setup.ts",
   "componentsDiscovery": {
