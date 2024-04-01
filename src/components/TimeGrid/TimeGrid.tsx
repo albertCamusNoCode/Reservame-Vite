@@ -24,28 +24,37 @@ const TimeGrid: React.FC<TimeGridProps> = ({
   selectedTimeSlot,
   setSelectedTimeSlot,
 }) => {
+  const formatTime = (hour: number, minute: string) => {
+    const h = hour % 12 || 12; // Convert hour to 12-hour format
+    const ampm = hour < 12 || hour === 24 ? "am" : "pm"; // Determine AM/PM
+    return `${h.toString().padStart(2, "0")}:${minute} ${ampm}`;
+  };
+
   const generateTimeSlots = () => ({
-    "All Day": Array.from({ length: 18 }, (_, index) => ({
-      label: `${String(8 + Math.floor(index / 2)).padStart(2, "0")}:${
-        index % 2 === 0 ? "00" : "30"
-      } - ${String(8 + Math.floor(index / 2)).padStart(2, "0")}:${
-        index % 2 === 0 ? "30" : "00"
-      }`,
-    })),
+    "All Day": Array.from({ length: 18 }, (_, index) => {
+      const startHour = 8 + Math.floor(index / 2);
+      const endHour = startHour;
+      return {
+        label: `${formatTime(
+          startHour,
+          index % 2 === 0 ? "00" : "30"
+        )} - ${formatTime(endHour, index % 2 === 0 ? "30" : "00")}`,
+      };
+    }),
     Morning: Array.from({ length: 6 }, (_, index) => ({
-      label: `${String(8 + index).padStart(2, "0")}:00 - ${String(
-        8 + index
-      ).padStart(2, "0")}:30`,
+      label: `${formatTime(8 + index, "00")} - ${formatTime(8 + index, "30")}`,
     })),
     Afternoon: Array.from({ length: 6 }, (_, index) => ({
-      label: `${String(12 + index).padStart(2, "0")}:00 - ${String(
-        12 + index
-      ).padStart(2, "0")}:30`,
+      label: `${formatTime(12 + index, "00")} - ${formatTime(
+        12 + index,
+        "30"
+      )}`,
     })),
     Evening: Array.from({ length: 6 }, (_, index) => ({
-      label: `${String(18 + index).padStart(2, "0")}:00 - ${String(
-        18 + index
-      ).padStart(2, "0")}:30`,
+      label: `${formatTime(18 + index, "00")} - ${formatTime(
+        18 + index,
+        "30"
+      )}`,
     })),
   });
 
@@ -70,11 +79,12 @@ const TimeGrid: React.FC<TimeGridProps> = ({
     return appointments.some((appointment: Appointment) => {
       const appointmentDate = new Date(appointment.time);
       const slotStart = new Date(selectedDate);
-      const [startHours, startMinutes] = slot.label.split(" - ")[0].split(":");
-      slotStart.setHours(parseInt(startHours), parseInt(startMinutes), 0, 0);
+      const [start, end] = slot.label.split(" - ");
+      const [startHour, startMinute] = start.split(":");
+      const [endHour, endMinute] = end.split(":");
+      slotStart.setHours(parseInt(startHour), parseInt(startMinute), 0, 0);
       const slotEnd = new Date(selectedDate);
-      const [endHours, endMinutes] = slot.label.split(" - ")[1].split(":");
-      slotEnd.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
+      slotEnd.setHours(parseInt(endHour), parseInt(endMinute), 0, 0);
 
       return appointmentDate >= slotStart && appointmentDate < slotEnd;
     });
