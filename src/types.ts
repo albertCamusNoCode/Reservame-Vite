@@ -19,3 +19,17 @@ interface SideNav {
   route: string;
 }
 export type { SideNav };
+
+interface Business {
+  $id?: string;
+  name: string;
+  // Add other business properties as needed
+}
+
+interface BusinessContextType {
+  current: Business[];
+  add: (business: Business) => Promise<void>;
+  remove: (id: string) => Promise<void>;
+}
+
+export type { Business, BusinessContextType };
