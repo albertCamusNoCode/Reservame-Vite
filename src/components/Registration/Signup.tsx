@@ -7,13 +7,9 @@ import { Button } from "@/components/ui/button";
 import Lottie from "lottie-react";
 import lottieLoader from "../../../public/lottie-loader.json";
 import { useToast } from "@/components/ui/use-toast"; // Added for toast notification
-interface User {
-  name: string;
-}
 
 const Signup = () => {
   const [loading, setLoading] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [name, setName] = useState<string>("");
@@ -22,10 +18,6 @@ const Signup = () => {
 
   async function login(email: string, password: string) {
     await account.createEmailSession(email, password);
-    const user = await account.get();
-    if (user) {
-      setLoggedInUser(user as User);
-    }
   }
 
   return (

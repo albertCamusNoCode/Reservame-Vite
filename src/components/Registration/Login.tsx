@@ -1,19 +1,15 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; //
-import { account } from "../../lib/appwrite";
+import { useNavigate } from "react-router-dom";
+import { account } from "@/lib/appwrite"; // Import Appwrite account from appwrite.js
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Lottie from "lottie-react";
 import lottieLoader from "../../../public/lottie-loader.json";
 import { useToast } from "@/components/ui/use-toast"; // Added for toast notification
-interface User {
-  name: string;
-}
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { toast } = useToast(); // Using toast
@@ -24,7 +20,6 @@ const Login = () => {
       await account.createEmailSession(email, password);
       const user = await account.get();
       if (user) {
-        setLoggedInUser(user as User);
         toast({
           title: "Success",
           description: "You are now logged in.",
@@ -36,6 +31,19 @@ const Login = () => {
       toast({
         title: "Error",
         description: "Login failed. Please try again.",
+      });
+    }
+  }
+
+  async function loginWithGoogle() {
+    try {
+      await account.createOAuth2Session("google"); // Use Google as OAuth provider
+      navigate("/dashboard"); // Navigate to dashboard on successful login
+    } catch (error) {
+      console.error("Google login failed:", error);
+      toast({
+        title: "Error",
+        description: "Google login failed. Please try again.",
       });
     }
   }
@@ -84,6 +92,21 @@ const Login = () => {
                 <Lottie animationData={lottieLoader} loop={true} />
               ) : (
                 "Login"
+              )}
+            </Button>
+
+            <div className="text-center my-2">Or</div>
+            <Button
+              className="w-full py-2 px-4 text-center bg-blue-600 rounded-md text-white text-sm hover:bg-blue-500"
+              onClick={async () => {
+                setLoading(true);
+                await loginWithGoogle();
+                setLoading(false);
+              }}>
+              {loading ? (
+                <Lottie animationData={lottieLoader} loop={true} />
+              ) : (
+                "Google Login"
               )}
             </Button>
           </div>

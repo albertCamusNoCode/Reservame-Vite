@@ -1,6 +1,8 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import {
   CalendarIcon,
   ChartPieIcon,
@@ -8,9 +10,12 @@ import {
   FolderIcon,
   UsersIcon,
   XMarkIcon,
+  ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 
 import { SideNav as SideNavType } from "@/types";
+import { account } from "@/lib/appwrite"; // Import Appwrite account SDK
+import { Button } from "@/components/ui/button"; // Import Button from UI components
 
 const sideNavLabels: SideNavType[] = [
   {
@@ -56,11 +61,34 @@ function classNames(...classes: string[]) {
 
 const SideNav = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userAvatar, setUserAvatar] = useState<string>("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await account.get();
+        setUserAvatar(user.prefs.avatar); // Set user avatar from Appwrite user preferences
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleNavigation = (route: string) => {
     navigate(route);
     setSidebarOpen(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await account.deleteSession("current"); // Deletes the current session
+      navigate("/registration"); // Navigate to registration page after logout
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   return (
@@ -90,42 +118,57 @@ const SideNav = () => {
               leave="transition ease-in-out duration-300 transform"
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full">
-              <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col">
-                <div className="flex-1 overflow-y-auto bg-white">
+              <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-card">
+                <div className="flex-1 overflow-y-auto">
                   <div className="flex items-center justify-between p-4">
-                    <h2 className="text-lg font-bold">Reservame</h2>
-                    <button
-                      type="button"
-                      className="-mr-2 p-2 text-gray-400 hover:text-gray-500"
-                      onClick={() => setSidebarOpen(false)}>
+                    <h2 className="text-lg font-bold text-foreground">
+                      Reservame
+                    </h2>
+                    <Button
+                      onClick={() => setSidebarOpen(false)}
+                      className="-mr-2 p-2 text-muted hover:text-muted-foreground"
+                      variant="outline">
                       <span className="sr-only">Close sidebar</span>
                       <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
+                    </Button>
                   </div>
                   <nav className="px-2">
                     <div className="space-y-1">
                       {sideNavLabels.map((item) => (
-                        <a
+                        <Button
                           key={item.id}
                           onClick={() => handleNavigation(item.route)}
                           className={classNames(
-                            item.current
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-600 hover:bg-gray-50",
                             "group flex items-center px-2 py-2 text-base font-medium rounded-md cursor-pointer"
-                          )}>
+                          )}
+                          variant="outline">
                           <item.icon
-                            className={classNames(
-                              item.current
-                                ? "text-gray-500"
-                                : "text-gray-400 group-hover:text-gray-500",
-                              "mr-4 h-6 w-6"
-                            )}
+                            className="mr-4 h-6 w-6"
                             aria-hidden="true"
                           />
                           {item.label}
-                        </a>
+                        </Button>
                       ))}
+                      {/* Logout Button */}
+                      <Button
+                        onClick={handleLogout}
+                        className="group flex items-center px-2 py-2 text-base font-medium rounded-md cursor-pointer"
+                        variant="outline">
+                        <ArrowRightOnRectangleIcon
+                          className="mr-4 h-6 w-6"
+                          aria-hidden="true"
+                        />
+                        Logout
+                      </Button>
+                      {/* Profile Icon */}
+                      <div className="pt-4">
+                        <Avatar>
+                          <AvatarImage
+                            src={userAvatar || "https://github.com/shadcn.png"}
+                          />
+                          <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                      </div>
                     </div>
                   </nav>
                 </div>
@@ -136,31 +179,39 @@ const SideNav = () => {
       </Transition.Root>
 
       <div className="hidden lg:flex lg:w-64 lg:flex-col">
-        <div className="flex flex-grow flex-col overflow-y-auto bg-white p-4">
-          <h2 className="text-lg font-bold">Reservame</h2>
+        <div className="flex flex-grow flex-col overflow-y-auto bg-card p-4">
+          <h2 className="text-lg font-bold text-foreground">Reservame</h2>
           <nav className="mt-5 flex-1 px-2 space-y-1">
             {sideNavLabels.map((item) => (
-              <a
+              <Button
                 key={item.id}
                 onClick={() => handleNavigation(item.route)}
-                className={classNames(
-                  item.current
-                    ? "bg-gray-100 text-gray-900"
-                    : "text-gray-600 hover:bg-gray-50",
-                  "group flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer"
-                )}>
-                <item.icon
-                  className={classNames(
-                    item.current
-                      ? "text-gray-500"
-                      : "text-gray-400 group-hover:text-gray-500",
-                    "mr-3 h-6 w-6"
-                  )}
-                  aria-hidden="true"
-                />
+                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer"
+                variant="outline">
+                <item.icon className="mr-3 h-6 w-6" aria-hidden="true" />
                 {item.label}
-              </a>
+              </Button>
             ))}
+            {/* Logout Button for larger screens */}
+            <Button
+              onClick={handleLogout}
+              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer"
+              variant="outline">
+              <ArrowRightOnRectangleIcon
+                className="mr-3 h-6 w-6"
+                aria-hidden="true"
+              />
+              Logout
+            </Button>
+            {/* Profile Icon for larger screens */}
+            <div className="pt-4">
+              <Avatar>
+                <AvatarImage
+                  src={userAvatar || "https://github.com/shadcn.png"}
+                />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            </div>
           </nav>
         </div>
       </div>
