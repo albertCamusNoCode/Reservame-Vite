@@ -3,8 +3,6 @@ import Signup from "@/components/Registration/Signup";
 import { useState } from "react";
 
 export default function Registration() {
-  const [showLogin, setShowLogin] = useState(true);
-
   return (
     <div>
       {showLogin ? (
