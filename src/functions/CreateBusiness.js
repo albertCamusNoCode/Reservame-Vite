@@ -1,21 +1,25 @@
-export default async ({ req, res }) => {
-  // Check if the request method is GET
-  if (req.method === "GET") {
-    // Create an array of days in a week
-    const daysOfWeek = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
+const express = require("express");
+const router = express.Router();
 
-    // Send the array of days as a JSON response
-    return res.json(daysOfWeek);
-  } else {
-    // If the request method is not GET, send a 405 Method Not Allowed status code
-    return res.status(405).send("Method Not Allowed");
-  }
-};
+router.get("/", (req, res) => {
+  // Create an array of days in a week
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  // Send the array of days as a JSON response
+  res.json(daysOfWeek);
+});
+
+router.use((req, res) => {
+  // If the request method is not GET, send a 405 Method Not Allowed status code
+  res.status(405).send("Method Not Allowed");
+});
+
+module.exports = router;
