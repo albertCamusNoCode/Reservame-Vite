@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; //
 import { account } from "../../lib/appwrite";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -10,16 +11,13 @@ interface User {
   name: string;
 }
 
-interface LoginProps {
-  setShowLogin: (value: boolean) => void;
-}
-
-const Login = ({ setShowLogin }: LoginProps) => {
+const Login = () => {
   const [loading, setLoading] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { toast } = useToast(); // Using toast
+  const navigate = useNavigate();
 
   async function login(email: string, password: string) {
     try {
@@ -94,7 +92,10 @@ const Login = ({ setShowLogin }: LoginProps) => {
           <a
             className="text-indigo-600 dark:text-indigo-400 hover:underline"
             href="#"
-            onClick={() => setShowLogin(false)}>
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/registration/signup"); // Corrected navigation
+            }}>
             Sign Up
           </a>
         </p>

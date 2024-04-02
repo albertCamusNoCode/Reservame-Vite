@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Added for navigation
 import { account, ID } from "../../lib/appwrite";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -10,17 +11,14 @@ interface User {
   name: string;
 }
 
-interface SignupProps {
-  setShowLogin: (value: boolean) => void;
-}
-
-const Signup = ({ setShowLogin }: SignupProps) => {
+const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [name, setName] = useState<string>("");
   const { toast } = useToast(); // Using toast
+  const navigate = useNavigate(); // Corrected for navigation
 
   async function login(email: string, password: string) {
     await account.createEmailSession(email, password);
@@ -120,7 +118,7 @@ const Signup = ({ setShowLogin }: SignupProps) => {
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              setShowLogin(true);
+              navigate("/registration/login"); // Corrected navigation
             }}>
             Login
           </a>

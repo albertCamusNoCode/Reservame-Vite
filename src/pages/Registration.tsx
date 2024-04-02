@@ -1,15 +1,14 @@
+import { Routes, Route } from "react-router-dom";
 import Login from "@/components/Registration/Login";
 import Signup from "@/components/Registration/Signup";
-import { useState } from "react";
 
-export default function Registration() {
+function Registration() {
   return (
-    <div>
-      {showLogin ? (
-        <Login setShowLogin={setShowLogin} />
-      ) : (
-        <Signup setShowLogin={setShowLogin} />
-      )}
-    </div>
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="signup" element={<Signup />} />
+      <Route path="login" element={<Login />} />
+    </Routes>
   );
 }
+export default Registration;
