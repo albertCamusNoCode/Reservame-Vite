@@ -10,7 +10,11 @@ interface User {
   name: string;
 }
 
-const Signup = () => {
+interface SignupProps {
+  setShowLogin: (value: boolean) => void;
+}
+
+const Signup = ({ setShowLogin }: SignupProps) => {
   const [loading, setLoading] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [email, setEmail] = useState<string>("");
@@ -114,8 +118,9 @@ const Signup = () => {
           <a
             className="text-indigo-600 dark:text-indigo-400 hover:underline"
             href="#"
-            onClick={() => {
-              /* Logic to show login form */
+            onClick={(e) => {
+              e.preventDefault();
+              setShowLogin(true);
             }}>
             Login
           </a>
