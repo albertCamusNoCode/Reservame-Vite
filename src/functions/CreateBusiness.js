@@ -1,31 +1,21 @@
-// This is your Appwrite function
-// It's executed each time we get a request
-export default async ({ req, res, log, error }) => {
-  // Why not try the Appwrite SDK?
-  //
-  // const client = new Client()
-  //    .setEndpoint('https://cloud.appwrite.io/v1')
-  //    .setProject(process​.env.APPWRITE_FUNCTION_PROJECT_ID)
-  //    .setKey(process​.env.APPWRITE_API_KEY);
-
-  // You can log messages to the console
-  log("Hello, Logs!");
-
-  // If something goes wrong, log an error
-  error("Hello, Errors!");
-
-  // The `req` object contains the request data
+export default async ({ req, res }) => {
+  // Check if the request method is GET
   if (req.method === "GET") {
-    // Send a response with the res object helpers
-    // `res.send()` dispatches a string back to the client
-    return res.send("Hello, World!");
-  }
+    // Create an array of days in a week
+    const daysOfWeek = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
 
-  // `res.json()` is a handy helper for sending JSON
-  return res.json({
-    motto: "Build like a team of hundreds_",
-    learn: "https://appwrite.io/docs",
-    connect: "https://appwrite.io/discord",
-    getInspired: "https://builtwith.appwrite.io",
-  });
+    // Send the array of days as a JSON response
+    return res.json(daysOfWeek);
+  } else {
+    // If the request method is not GET, send a 405 Method Not Allowed status code
+    return res.status(405).send("Method Not Allowed");
+  }
 };
