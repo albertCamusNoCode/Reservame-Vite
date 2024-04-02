@@ -1,5 +1,6 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import { useNavigate } from "react-router-dom";
 import {
   CalendarIcon,
   ChartPieIcon,
@@ -12,19 +13,55 @@ import {
 import { SideNav as SideNavType } from "@/types";
 
 const sideNavLabels: SideNavType[] = [
-  { id: 1, label: "Appointments", icon: CalendarIcon, current: false },
-  { id: 2, label: "Clients", icon: UsersIcon, current: false },
-  { id: 3, label: "Services", icon: FolderIcon, current: false },
-  { id: 4, label: "Scheduler", icon: ChartPieIcon, current: false },
-  { id: 5, label: "Integrations", icon: DocumentDuplicateIcon, current: false },
+  {
+    id: 1,
+    label: "Appointments",
+    icon: CalendarIcon,
+    current: false,
+    route: "/dashboard/appointments",
+  },
+  {
+    id: 2,
+    label: "Clients",
+    icon: UsersIcon,
+    current: false,
+    route: "/dashboard/clients",
+  },
+  {
+    id: 3,
+    label: "Services",
+    icon: FolderIcon,
+    current: false,
+    route: "/dashboard/services",
+  },
+  {
+    id: 4,
+    label: "Scheduler",
+    icon: ChartPieIcon,
+    current: false,
+    route: "/dashboard/scheduler",
+  },
+  {
+    id: 5,
+    label: "Integrations",
+    icon: DocumentDuplicateIcon,
+    current: false,
+    route: "/dashboard/integrations",
+  },
 ];
 
-function classNames(...classes) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 const SideNav = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleNavigation = (route: string) => {
+    navigate(route);
+    setSidebarOpen(false);
+  };
 
   return (
     <>
@@ -70,12 +107,12 @@ const SideNav = () => {
                       {sideNavLabels.map((item) => (
                         <a
                           key={item.id}
-                          href="#"
+                          onClick={() => handleNavigation(item.route)}
                           className={classNames(
                             item.current
                               ? "bg-gray-100 text-gray-900"
                               : "text-gray-600 hover:bg-gray-50",
-                            "group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                            "group flex items-center px-2 py-2 text-base font-medium rounded-md cursor-pointer"
                           )}>
                           <item.icon
                             className={classNames(
@@ -105,12 +142,12 @@ const SideNav = () => {
             {sideNavLabels.map((item) => (
               <a
                 key={item.id}
-                href="#"
+                onClick={() => handleNavigation(item.route)}
                 className={classNames(
                   item.current
                     ? "bg-gray-100 text-gray-900"
                     : "text-gray-600 hover:bg-gray-50",
-                  "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                  "group flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer"
                 )}>
                 <item.icon
                   className={classNames(

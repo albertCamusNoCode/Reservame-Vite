@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Registration from "./pages/Registration";
@@ -13,7 +13,7 @@ const App = () => {
         <Toaster />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="dashboard/*" element={<Dashboard />} />
           <Route path="registration/*" element={<Registration />} />
           <Route path="*" element={<NoPage />} />
         </Routes>

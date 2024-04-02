@@ -16,5 +16,6 @@ interface SideNav {
     | typeof ChartPieIcon
     | typeof DocumentDuplicateIcon;
   current: boolean;
+  route: string;
 }
 export type { SideNav };

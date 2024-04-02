@@ -47,6 +47,7 @@ const Signup = () => {
                 description:
                   "Account created successfully. You are now logged in.",
               });
+              navigate("/dashboard"); // Navigate to dashboard on successful login
             } catch (error) {
               console.error("Failed to register account:", error);
               toast({

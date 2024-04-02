@@ -29,6 +29,7 @@ const Login = () => {
           title: "Success",
           description: "You are now logged in.",
         });
+        navigate("/dashboard"); // Navigate to dashboard on successful login
       }
     } catch (error) {
       console.error("Login failed:", error);
