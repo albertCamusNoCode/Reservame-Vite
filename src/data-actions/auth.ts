@@ -1,10 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
+import { User } from "../types";
 
 const API_BASE_URL = "https://xvnx-2txy-671y.n7c.xano.io/api:8LWq6rLJ"; // Replace with your Xano API endpoint
 
 export const useAuth = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -16,9 +17,11 @@ export const useAuth = () => {
         password,
         name,
       });
-      setUser(response.data);
+      const { authToken } = response.data;
+      axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
+      setUser({ email, name, authToken });
       setLoading(false);
-      return response.data;
+      return { email, name, authToken };
     } catch (err) {
       setError(err as any);
       setLoading(false);

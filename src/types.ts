@@ -47,3 +47,11 @@ interface BusinessPublic {
   is_active: boolean;
 }
 export type { BusinessPublic };
+
+type User = {
+  email: string;
+  name: string;
+  authToken: string;
+} | null;
+export type { User };
+
