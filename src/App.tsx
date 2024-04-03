@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Registration from "./pages/Registration";
 import NoPage from "./pages/404";
 import { Toaster } from "./components/ui/toaster";
+import Reserva from "./pages/Reserva";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="dashboard/*" element={<Dashboard />} />
           <Route path="registration/*" element={<Registration />} />
+          <Route path="reserva/*" element={<Reserva />} />
           <Route path="*" element={<NoPage />} />
         </Routes>
       </BrowserRouter>

@@ -1,21 +1,20 @@
 import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
-import { getAppointments } from "../ClientScheduler/services/getAppointments";
-import { Appointment } from "../ClientScheduler/services/types"; // Adjust the path as necessary
+import { getAppointments } from "../../data/appointment"; // Updated import path
+import { Appointment } from "../../types"; // Updated import path
 
 type TimeSlot = {
   label: string;
+  start: Date;
 };
 
-type TimeSlots = {
-  [key: string]: TimeSlot[];
-};
+type TimeSlots = TimeSlot[];
 
 interface TimeGridProps {
   selectedToD: string;
   selectedDate: Date;
-  selectedTimeSlot: string;
-  setSelectedTimeSlot: React.Dispatch<React.SetStateAction<string>>;
+  selectedTimeSlot: Date | null;
+  setSelectedTimeSlot: React.Dispatch<React.SetStateAction<Date | null>>;
 }
 
 const TimeGrid: React.FC<TimeGridProps> = ({
@@ -24,42 +23,33 @@ const TimeGrid: React.FC<TimeGridProps> = ({
   selectedTimeSlot,
   setSelectedTimeSlot,
 }) => {
-  const formatTime = (hour: number, minute: string) => {
-    const h = hour % 12 || 12; // Convert hour to 12-hour format
-    const ampm = hour < 12 || hour === 24 ? "am" : "pm"; // Determine AM/PM
-    return `${h.toString().padStart(2, "0")}:${minute} ${ampm}`;
+  const formatTime = (date: Date) => {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const h = hours % 12 || 12; // Convert hour to 12-hour format
+    const ampm = hours < 12 || hours === 24 ? "am" : "pm"; // Determine AM/PM
+    return `${h.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")} ${ampm}`;
   };
 
-  const generateTimeSlots = () => ({
-    "All Day": Array.from({ length: 18 }, (_, index) => {
-      const startHour = 8 + Math.floor(index / 2);
-      const endHour = startHour;
-      return {
-        label: `${formatTime(
-          startHour,
-          index % 2 === 0 ? "00" : "30"
-        )} - ${formatTime(endHour, index % 2 === 0 ? "30" : "00")}`,
-      };
-    }),
-    Morning: Array.from({ length: 6 }, (_, index) => ({
-      label: `${formatTime(8 + index, "00")} - ${formatTime(8 + index, "30")}`,
-    })),
-    Afternoon: Array.from({ length: 6 }, (_, index) => ({
-      label: `${formatTime(12 + index, "00")} - ${formatTime(
-        12 + index,
-        "30"
-      )}`,
-    })),
-    Evening: Array.from({ length: 6 }, (_, index) => ({
-      label: `${formatTime(18 + index, "00")} - ${formatTime(
-        18 + index,
-        "30"
-      )}`,
-    })),
-  });
+  const generateTimeSlots = (): TimeSlots => {
+    const slots: TimeSlots = [];
+    const startOfDay = new Date(selectedDate.setHours(0, 0, 0, 0));
+    for (let i = 0; i < 24; i += 0.5) {
+      const hours = Math.floor(i);
+      const minutes = (i % 1) * 60;
+      const start = new Date(startOfDay.getTime());
+      start.setHours(hours, minutes);
+      const end = new Date(start.getTime() + 30 * 60000); // Adds 30 minutes
+      slots.push({
+        label: `${formatTime(start)} - ${formatTime(end)}`,
+        start: start,
+      });
+    }
+    return slots;
+  };
 
-  const timeSlots: TimeSlots = React.useMemo(generateTimeSlots, []);
-  const [appointments, setAppointments] = useState<Appointment[]>([]); // Fixed type to Appointment[]
+  const timeSlots: TimeSlots = React.useMemo(generateTimeSlots, [selectedDate]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -78,34 +68,26 @@ const TimeGrid: React.FC<TimeGridProps> = ({
   const isTimeSlotBooked = (slot: TimeSlot) => {
     return appointments.some((appointment: Appointment) => {
       const appointmentDate = new Date(appointment.time);
-      const slotStart = new Date(selectedDate);
-      const [start, end] = slot.label.split(" - ");
-      const [startHour, startMinute] = start.split(":");
-      const [endHour, endMinute] = end.split(":");
-      slotStart.setHours(parseInt(startHour), parseInt(startMinute), 0, 0);
-      const slotEnd = new Date(selectedDate);
-      slotEnd.setHours(parseInt(endHour), parseInt(endMinute), 0, 0);
-
-      return appointmentDate >= slotStart && appointmentDate < slotEnd;
+      return appointmentDate >= slot.start && appointmentDate < new Date(slot.start.getTime() + 30 * 60000);
     });
   };
 
   return (
     <>
       <div className={`mt-4 grid grid-cols-6 gap-2`}>
-        {timeSlots[selectedToD]?.map((slot: TimeSlot, index: number) => (
+        {timeSlots.map((slot: TimeSlot, index: number) => (
           <Button
             key={index}
             size="sm"
             variant={
               isTimeSlotBooked(slot)
                 ? "unclickable"
-                : selectedTimeSlot === slot.label
+                : selectedTimeSlot && selectedTimeSlot.getTime() === slot.start.getTime()
                 ? "default"
                 : "outline"
             }
             onClick={() =>
-              !isTimeSlotBooked(slot) && setSelectedTimeSlot(slot.label)
+              !isTimeSlotBooked(slot) && setSelectedTimeSlot(slot.start)
             }>
             {slot.label}
           </Button>

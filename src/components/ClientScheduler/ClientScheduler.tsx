@@ -2,6 +2,7 @@ import { addDays, format, startOfWeek, addWeeks } from "date-fns";
 import { SVGProps, useState, FC } from "react";
 import TimeGrid from "../TimeGrid/TimeGrid";
 import { Button } from "@/components/ui/button";
+import { addAppointment } from "../../data/appointment";
 
 interface ChevronIconProps extends SVGProps<SVGSVGElement> {}
 
@@ -45,7 +46,7 @@ export const ClientScheduler: FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentWeek, setCurrentWeek] = useState<Date>(new Date());
   const [selectedToD, setSelectedToD] = useState<string>("All Day");
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>("");
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null);
 
   const handleSelectDate = (date: Date): void => {
     setSelectedDate(date);
@@ -64,7 +65,7 @@ export const ClientScheduler: FC = () => {
     setSelectedDate(startOfWeek(newWeek));
   };
 
-  const businessId = "1"; // Example business ID
+  const businessId = "660b88e229e05e16978e"; // Example business ID
 
   const handleContinue = async () => {
     if (!selectedTimeSlot) {
@@ -72,19 +73,18 @@ export const ClientScheduler: FC = () => {
       return;
     }
 
-    // Format the selectedDate and selectedTimeSlot into an ISO string with timezone
-    const startTime = selectedTimeSlot;
-    const appointmentDate = new Date(selectedDate);
-    const [hours, minutes] = startTime.split(":");
-    appointmentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
 
-    const isoDateTime = appointmentDate.toISOString();
-
-    const result = await postAppointment(businessId, isoDateTime);
-    if (result) {
+    const appointmentDate = new Date(selectedTimeSlot);
+    try {
+      await addAppointment({
+        business: businessId,
+        time: appointmentDate,
+      });
       alert("Appointment booked successfully.");
       // Optionally reset state or redirect the user
-    } else {
+    } catch (error) {
+      console.error("Failed to book appointment:", error);
+      alert("Failed to book appointment.");
     }
   };
 

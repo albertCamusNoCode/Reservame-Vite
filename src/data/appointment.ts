@@ -11,7 +11,7 @@ client
 export const APPOINTMENT_DATABASE_ID = "660b84ccc57ec4e5096c"; // Replace with your database ID
 export const APPOINTMENT_COLLECTION_ID = "660b84da71a2c92ed8d7"; // Replace with your collection ID
 
-export async function add(appointment: Appointment) {
+export async function addAppointment(appointment: Appointment) {
   try {
     const response = await databases.createDocument(
       APPOINTMENT_DATABASE_ID,
@@ -22,5 +22,20 @@ export async function add(appointment: Appointment) {
     console.log(response); // Success
   } catch (error) {
     console.log(error); // Failure
+  }
+}
+
+export async function getAppointments(businessId: string) {
+  try {
+    const response = await databases.listDocuments(
+      APPOINTMENT_DATABASE_ID,
+      APPOINTMENT_COLLECTION_ID,
+      [`${businessId}`] // Filter documents by businessId
+    );
+    console.log(response); // Success
+    return response.documents as unknown as Appointment[];
+  } catch (error) {
+    console.log(error); // Failure
+    return [];
   }
 }
