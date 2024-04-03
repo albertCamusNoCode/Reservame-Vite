@@ -26,10 +26,12 @@ interface Business {
   // Add other business properties as needed
 }
 
-interface BusinessContextType {
-  current: Business[];
-  add: (business: Business) => Promise<void>;
-  remove: (id: string) => Promise<void>;
-}
+export type { Business };
 
-export type { Business, BusinessContextType };
+interface Appointment {
+  time: Date;
+  phoneNumber?: string;
+  business: string;
+  client?: string;
+}
+export type { Appointment };

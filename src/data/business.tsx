@@ -39,7 +39,7 @@ export function useBusiness() {
       BUSINESS_COLLECTION_ID,
       [Query.orderDesc("$createdAt"), Query.limit(10)]
     );
-    setBusinesses(response.documents as Business[]);
+    setBusinesses(response.documents as unknown as Business[]);
   }
   useEffect(() => {
     init();
