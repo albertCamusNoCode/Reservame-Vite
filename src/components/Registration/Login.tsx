@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../data-actions/auth"; // Import auth from @auth as rest API functions from Xano
 import { Label } from "@/components/ui/label";
@@ -14,7 +14,18 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
   const { toast } = useToast(); // Using toast
   const navigate = useNavigate();
-  const { login } = useAuth(); // Destructure login and loginWithGoogle from useAuth
+  const { login, user, isLoggedIn } = useAuth(); // Destructure login, user, and isLoggedIn from useAuth
+  
+  useEffect(() => {
+    // Check if user is already logged in
+    if (isLoggedIn) {
+      toast({
+        title: "Already logged in",
+        description: `You are logged in as ${user?.email}. Redirecting to dashboard...`,
+      });
+      navigate("/dashboard");
+    }
+  }, [isLoggedIn, navigate, toast, user?.email]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -22,6 +33,11 @@ const Login = () => {
         <h2 className="text-2xl font-semibold text-center text-gray-700 dark:text-white">
           Login
         </h2>
+        <div className="text-center my-4">
+          <p className="text-gray-600 dark:text-gray-300">
+            {user ? `Logged in as ${user.email}` : "Not logged in"}
+          </p>
+        </div>
         <form
           className="mt-8 space-y-3"
           onSubmit={async (e) => {
@@ -76,30 +92,6 @@ const Login = () => {
                 "Login"
               )}
             </Button>
-            {/* <div className="text-center my-2">Or</div>
-       <Button
-              className="w-full py-2 px-4 text-center bg-blue-600 rounded-md text-white text-sm hover:bg-blue-500"
-              onClick={async () => {
-                setLoading(true);
-                try {
-                  await loginWithGoogle();
-                  navigate("/dashboard"); // Navigate to dashboard on successful login
-                } catch (error) {
-                  console.error("Google login failed:", error);
-                  toast({
-                    title: "Error",
-                    description: "Google login failed. Please try again.",
-                  });
-                } finally {
-                  setLoading(false);
-                }
-              }}>
-              {loading ? (
-                <Lottie animationData={lottieLoader} loop={true} />
-              ) : (
-                "Google Login"
-              )}
-            </Button> */}
           </div>
         </form>
         <p className="mt-4 text-center">

@@ -1,26 +1,17 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "@/components/Registration/Login";
 import Signup from "@/components/Registration/Signup";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuth } from "../data-actions/auth"; // Adjusted import to useAuth from auth.ts
 
 function Registration() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { authMe } = useAuth(); // Adjusted to use authMe function from useAuth for authentication status check
+  const { user } = useAuth(); // Adjusted to directly use user state for authentication status check
 
   useEffect(() => {
-    const verifyAuthStatus = async () => {
-      try {
-        await authMe(); // Using authMe to verify if user is authenticated
-        setIsAuthenticated(true);
-      } catch {
-        setIsAuthenticated(false);
-      }
-    };
-    verifyAuthStatus();
+    // Effect to handle side effects if needed in the future
   }, []);
 
-  if (isAuthenticated) return <Navigate to="/dashboard" />;
+  if (user) return <Navigate to="/dashboard" />; // Directly checking user state to decide on redirection
 
   return (
     <Routes>
