@@ -17,6 +17,28 @@ const Signup = () => {
   const navigate = useNavigate();
   const { signup } = useAuth(); // Destructure signup from useAuth
 
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await signup(email, password, name);
+      toast({
+        title: "Success",
+        description:
+          "Account created successfully. You are now logged in.",
+      });
+      navigate("/dashboard"); // Navigate to dashboard on successful login
+    } catch (error) {
+      console.error("Failed to register account:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create account. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="w-full max-w-md px-8 py-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
@@ -25,27 +47,7 @@ const Signup = () => {
         </h2>
         <form
           className="mt-8 space-y-3"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setLoading(true);
-            try {
-              const userData = await signup(email, password, name);
-              toast({
-                title: "Success",
-                description:
-                  "Account created successfully. You are now logged in.",
-              });
-              navigate("/dashboard"); // Navigate to dashboard on successful login
-            } catch (error) {
-              console.error("Failed to register account:", error);
-              toast({
-                title: "Error",
-                description: "Failed to create account. Please try again.",
-              });
-            } finally {
-              setLoading(false);
-            }
-          }}>
+          onSubmit={handleSignup}>
           <div className="space-y-1">
             <Label htmlFor="name">Name</Label>
             <Input

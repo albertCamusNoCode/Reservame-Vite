@@ -52,7 +52,6 @@ type User = {
   id: string;
   email: string;
   name: string;
-  authToken: string;
   createdAt: Date; // Assuming created_at is a timestamp, change the type if necessary
   phone?: string; // Optional since the example response has an empty phone
   googleOauth?: string; // Optional, adjust according to actual usage

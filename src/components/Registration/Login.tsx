@@ -14,18 +14,28 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
   const { toast } = useToast(); // Using toast
   const navigate = useNavigate();
-  const { login, user, isLoggedIn } = useAuth(); // Destructure login, user, and isLoggedIn from useAuth
-  
-  useEffect(() => {
-    // Check if user is already logged in
-    if (isLoggedIn) {
+  const { login, user } = useAuth(); // Destructure login, user, and isLoggedIn from useAuth
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await login(email, password);
       toast({
-        title: "Already logged in",
-        description: `You are logged in as ${user?.email}. Redirecting to dashboard...`,
+        title: "Success",
+        description: "You are now logged in.",
       });
-      navigate("/dashboard");
+      navigate("/dashboard"); // Navigate to dashboard on successful login
+    } catch (error) {
+      console.error("Login failed:", error);
+      toast({
+        title: "Error",
+        description: "Login failed. Please try again.",
+      });
+    } finally {
+      setLoading(false);
     }
-  }, [isLoggedIn, navigate, toast, user?.email]);
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -40,26 +50,7 @@ const Login = () => {
         </div>
         <form
           className="mt-8 space-y-3"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setLoading(true);
-            try {
-              await login(email, password);
-              toast({
-                title: "Success",
-                description: "You are now logged in.",
-              });
-              navigate("/dashboard"); // Navigate to dashboard on successful login
-            } catch (error) {
-              console.error("Login failed:", error);
-              toast({
-                title: "Error",
-                description: "Login failed. Please try again.",
-              });
-            } finally {
-              setLoading(false);
-            }
-          }}>
+          onSubmit={handleLogin}>
           <div className="space-y-1">
             <Label htmlFor="email">Email</Label>
             <Input
