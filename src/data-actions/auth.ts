@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-const API_BASE_URL = "https://xvnx-2txy-671y.n7c.xano.io/"; // Replace with your Xano API endpoint
+const API_BASE_URL = "https://xvnx-2txy-671y.n7c.xano.io/api:8LWq6rLJ"; // Replace with your Xano API endpoint
 
 export const useAuth = () => {
   const [user, setUser] = useState(null);
@@ -57,5 +57,5 @@ export const useAuth = () => {
     }
   };
 
-  return { user, loading, error, signup, login, authMe };
+  return { user, loading, error, signup, login, authMe, isLoggedIn: user !== null };
 };

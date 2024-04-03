@@ -1,41 +1,53 @@
-import { Client, Databases, ID } from "appwrite";
+import axios from "axios";
 import { Appointment } from "../types";
 
-const client = new Client();
-const databases = new Databases(client);
+const API_BASE_URL = "https://xvnx-2txy-671y.n7c.xano.io/api:yvsnt5w1";
 
-client
-  .setEndpoint("https://cloud.appwrite.io/v1") // Your API Endpoint
-  .setProject("65b5f90a82a9ac01a79f"); // Your project ID
-
-export const APPOINTMENT_DATABASE_ID = "660b84ccc57ec4e5096c"; // Replace with your database ID
-export const APPOINTMENT_COLLECTION_ID = "660b84da71a2c92ed8d7"; // Replace with your collection ID
-
-export async function addAppointment(appointment: Appointment) {
+export const getAppointments = async (): Promise<Appointment[]> => {
   try {
-    const response = await databases.createDocument(
-      APPOINTMENT_DATABASE_ID,
-      APPOINTMENT_COLLECTION_ID,
-      ID.unique(),
-      appointment
-    );
-    console.log(response); // Success
+    const response = await axios.get<Appointment[]>(`${API_BASE_URL}/appointment`);
+    return response.data;
   } catch (error) {
-    console.log(error); // Failure
+    console.error("Error fetching appointments:", error);
+    throw error;
   }
-}
+};
 
-export async function getAppointments(businessId: string) {
+export const addAppointment = async (appointmentData: Appointment): Promise<Appointment> => {
   try {
-    const response = await databases.listDocuments(
-      APPOINTMENT_DATABASE_ID,
-      APPOINTMENT_COLLECTION_ID,
-      [`${businessId}`] // Filter documents by businessId
-    );
-    console.log(response); // Success
-    return response.documents as unknown as Appointment[];
+    const response = await axios.post<Appointment>(`${API_BASE_URL}/appointment`, appointmentData);
+    return response.data;
   } catch (error) {
-    console.log(error); // Failure
-    return [];
+    console.error("Error adding appointment:", error);
+    throw error;
   }
-}
+};
+
+export const deleteAppointment = async (appointmentId: string): Promise<void> => {
+  try {
+    await axios.delete(`${API_BASE_URL}/appointment/${appointmentId}`);
+  } catch (error) {
+    console.error("Error deleting appointment:", error);
+    throw error;
+  }
+};
+
+export const getAppointmentById = async (appointmentId: string): Promise<Appointment> => {
+  try {
+    const response = await axios.get<Appointment>(`${API_BASE_URL}/appointment/${appointmentId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching appointment by ID:", error);
+    throw error;
+  }
+};
+
+export const editAppointment = async (appointmentId: string, appointmentData: Partial<Appointment>): Promise<Appointment> => {
+  try {
+    const response = await axios.patch<Appointment>(`${API_BASE_URL}/appointment/${appointmentId}`, appointmentData);
+    return response.data;
+  } catch (error) {
+    console.error("Error editing appointment:", error);
+    throw error;
+  }
+};

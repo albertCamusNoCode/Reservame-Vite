@@ -21,17 +21,29 @@ interface SideNav {
 export type { SideNav };
 
 interface Business {
-  $id?: string;
+  id: string;
   name: string;
-  // Add other business properties as needed
+  phone: string;
 }
 
 export type { Business };
 
 interface Appointment {
-  time: Date;
-  phoneNumber?: string;
-  business: string;
-  client?: string;
+  id: string;
+  created_at: Date;
+  business_id: number;
+  client_phone?: string;
+  client_id?: string;
+  appt_time: Date;
+  appt_duration: number;
 }
 export type { Appointment };
+
+interface BusinessPublic {
+  id: string;
+  business_id: string;
+  days_open: number[];
+  appt_interval: number;
+  is_active: boolean;
+}
+export type { BusinessPublic };

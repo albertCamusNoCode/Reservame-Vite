@@ -53,7 +53,7 @@ const TimeGrid: React.FC<TimeGridProps> = ({
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const appointmentsData = await getAppointments("660b88e229e05e16978e"); // Assuming "1" is your business ID
+        const appointmentsData = await getAppointments(); // Assuming "1" is your business ID
         setAppointments(appointmentsData); // Correctly setting the appointments
       } catch (error) {
         console.error("Failed to fetch appointments:", error);

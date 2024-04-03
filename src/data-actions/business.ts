@@ -1,49 +1,53 @@
-import { useEffect, useState } from "react";
-import { databases } from "../lib/appwrite";
-import { ID, Query } from "appwrite";
-import { Business } from "../types"; // Import the type and Business
+import axios from "axios";
+import { Business } from "../types";
 
-export const BUSINESS_DATABASE_ID = "660b84ccc57ec4e5096c"; // Replace with your database ID
-export const BUSINESS_COLLECTION_ID = "660b85fc62355c7e5e13"; // Replace with your collection ID
+const API_BASE_URL = "https://xvnx-2txy-671y.n7c.xano.io/api:yvsnt5w1";
 
-export function useBusiness() {
-  const [businesses, setBusinesses] = useState<Business[]>([]);
-
-  async function add(business: Business) {
-    const response = await databases.createDocument(
-      BUSINESS_DATABASE_ID,
-      BUSINESS_COLLECTION_ID,
-      ID.unique(),
-      business
-    );
-    setBusinesses((prevBusinesses) =>
-      [{ ...business, $id: response.$id }, ...prevBusinesses].slice(0, 10)
-    );
+export const getBusinesses = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/business`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching businesses:", error);
+    throw error;
   }
+};
 
-  async function remove(id: string) {
-    await databases.deleteDocument(
-      BUSINESS_DATABASE_ID,
-      BUSINESS_COLLECTION_ID,
-      id
-    );
-    setBusinesses((prevBusinesses) =>
-      prevBusinesses.filter((business) => business.$id !== id)
-    );
-    await init(); // Refetch businesses to ensure we have 10 items
+export const addBusiness = async (Business: Business): Promise<Business> => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/business`, Business);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding business:", error);
+    throw error;
   }
+};
 
-  async function init() {
-    const response = await databases.listDocuments(
-      BUSINESS_DATABASE_ID,
-      BUSINESS_COLLECTION_ID,
-      [Query.orderDesc("$createdAt"), Query.limit(10)]
-    );
-    setBusinesses(response.documents as unknown as Business[]);
+export const deleteBusiness = async (businessId: string) => {
+  try {
+    await axios.delete(`${API_BASE_URL}/business/${businessId}`);
+  } catch (error) {
+    console.error("Error deleting business:", error);
+    throw error;
   }
-  useEffect(() => {
-    init();
-  }, []);
+};
 
-  return { current: businesses, add, remove };
-}
+export const getBusinessById = async (businessId: string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/business/${businessId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching business by ID:", error);
+    throw error;
+  }
+};
+
+export const editBusiness = async (businessId: string, business: Business): Promise<Business> => {
+  try {
+    const response = await axios.patch(`${API_BASE_URL}/business/${businessId}`, business);
+    return response.data;
+  } catch (error) {
+    console.error("Error editing business:", error);
+    throw error;
+  }
+};

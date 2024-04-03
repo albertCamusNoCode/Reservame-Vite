@@ -1,28 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, Routes, Route } from "react-router-dom";
-import { account } from "../lib/appwrite";
 import SideNav from "@/components/SideNav/SideNav";
 import Appointments from "@/components/Dashboard/Appointments";
 import Clients from "@/components/Dashboard/Clients";
 import Integrations from "@/components/Dashboard/Integrations.tsx";
 import Scheduler from "@/components/Dashboard/Scheduler";
 import Services from "@/components/Dashboard/Services";
+import { useAuth } from "../data-actions/auth"; // Import useAuth for authentication
 
 function Dashboard() {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn } = useAuth(); // Destructure isLoggedIn from useAuth
 
   useEffect(() => {
-    const checkLoggedIn = async () => {
-      try {
-        await account.get();
-        setIsLoggedIn(true);
-      } catch {
-        navigate("/registration");
-      }
-    };
-    checkLoggedIn();
-  }, [navigate]);
+    if (!isLoggedIn) {
+      navigate("/registration");
+    }
+  }, [isLoggedIn, navigate]);
 
   if (!isLoggedIn) return null;
 

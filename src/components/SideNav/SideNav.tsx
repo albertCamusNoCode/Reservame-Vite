@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,7 +14,6 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { SideNav as SideNavType } from "@/types";
-import { account } from "@/lib/appwrite"; // Import Appwrite account SDK
 import { Button } from "@/components/ui/button"; // Import Button from UI components
 
 const sideNavLabels: SideNavType[] = [
@@ -64,18 +63,7 @@ const SideNav = () => {
   const [userAvatar, setUserAvatar] = useState<string>("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user = await account.get();
-        setUserAvatar(user.prefs.avatar); // Set user avatar from Appwrite user preferences
-      } catch (error) {
-        console.error("Failed to fetch user:", error);
-      }
-    };
-
-    fetchUser();
-  }, []);
+  // Removed useEffect hook for fetching user data
 
   const handleNavigation = (route: string) => {
     navigate(route);
@@ -83,12 +71,8 @@ const SideNav = () => {
   };
 
   const handleLogout = async () => {
-    try {
-      await account.deleteSession("current"); // Deletes the current session
-      navigate("/registration"); // Navigate to registration page after logout
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+    // Simplified logout logic
+    navigate("/registration"); // Navigate to registration page after logout
   };
 
   return (
