@@ -66,7 +66,7 @@ const TimeGrid: React.FC<TimeGridProps> = ({
 
   const isTimeSlotBooked = (slot: TimeSlot) => {
     return appointments.some((appointment: Appointment) => {
-      const appointmentDate = new Date(appointment.time);
+      const appointmentDate = new Date(appointment.appt_time);
       return appointmentDate >= slot.start && appointmentDate < new Date(slot.start.getTime() + 30 * 60000);
     });
   };

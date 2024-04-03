@@ -65,7 +65,8 @@ export const ClientScheduler: FC = () => {
     setSelectedDate(startOfWeek(newWeek));
   };
 
-  const businessId = "660b88e229e05e16978e"; // Example business ID
+  const queryParams = new URLSearchParams(window.location.search);
+  const businessId = queryParams.get('bid') || ''; // Ensuring businessId is never null
 
   const handleContinue = async () => {
     if (!selectedTimeSlot) {
@@ -76,8 +77,9 @@ export const ClientScheduler: FC = () => {
     const appointmentDate = new Date(selectedTimeSlot);
     try {
       await addAppointment({
-        business: businessId,
-        time: appointmentDate,
+        business_id: businessId, // businessId is now guaranteed to be a string, not null
+        appt_time: appointmentDate,
+        appt_duration: 30, // Assuming 60 minutes for the duration/ Using current date-time as created_at
       });
       alert("Appointment booked successfully.");
       // Optionally reset state or redirect the user

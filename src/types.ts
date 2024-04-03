@@ -29,9 +29,9 @@ interface Business {
 export type { Business };
 
 interface Appointment {
-  id: string;
-  created_at: Date;
-  business_id: number;
+  id?: string;
+  created_at?: Date;
+  business_id: string;
   client_phone?: string;
   client_id?: string;
   appt_time: Date;
