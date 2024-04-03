@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { useBusiness } from "../../data/business";
+import { useBusiness } from "../../data-actions/business";
 import { Business } from "../../types"; // Import the Business type
 import { Button } from "../ui/button";
-import { add } from "../../data/appointment";
+import { addAppointment } from "../../data-actions/appointment";
 import { Appointment } from "../../types";
 
 function Appointments() {
@@ -19,7 +19,7 @@ function Appointments() {
       phoneNumber: "0000000000", // Placeholder phone number
       business: userBusinesses[0]?.$id || "", // Ensuring business ID is a string
     };
-    await add(appointment);
+    await addAppointment(appointment);
   };
 
   return (

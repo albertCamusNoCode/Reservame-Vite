@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { account } from "@/lib/appwrite"; // Import Appwrite account from appwrite.js
+import { useAuth } from "../../data-actions/auth"; // Import auth from @auth as rest API functions from Xano
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,39 +14,7 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
   const { toast } = useToast(); // Using toast
   const navigate = useNavigate();
-
-  async function login(email: string, password: string) {
-    try {
-      await account.createEmailSession(email, password);
-      const user = await account.get();
-      if (user) {
-        toast({
-          title: "Success",
-          description: "You are now logged in.",
-        });
-        navigate("/dashboard"); // Navigate to dashboard on successful login
-      }
-    } catch (error) {
-      console.error("Login failed:", error);
-      toast({
-        title: "Error",
-        description: "Login failed. Please try again.",
-      });
-    }
-  }
-
-  async function loginWithGoogle() {
-    try {
-      await account.createOAuth2Session("google"); // Use Google as OAuth provider
-      navigate("/dashboard"); // Navigate to dashboard on successful login
-    } catch (error) {
-      console.error("Google login failed:", error);
-      toast({
-        title: "Error",
-        description: "Google login failed. Please try again.",
-      });
-    }
-  }
+  const { login } = useAuth(); // Destructure login and loginWithGoogle from useAuth
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -59,8 +27,22 @@ const Login = () => {
           onSubmit={async (e) => {
             e.preventDefault();
             setLoading(true);
-            await login(email, password);
-            setLoading(false);
+            try {
+              await login(email, password);
+              toast({
+                title: "Success",
+                description: "You are now logged in.",
+              });
+              navigate("/dashboard"); // Navigate to dashboard on successful login
+            } catch (error) {
+              console.error("Login failed:", error);
+              toast({
+                title: "Error",
+                description: "Login failed. Please try again.",
+              });
+            } finally {
+              setLoading(false);
+            }
           }}>
           <div className="space-y-1">
             <Label htmlFor="email">Email</Label>
@@ -94,21 +76,30 @@ const Login = () => {
                 "Login"
               )}
             </Button>
-
-            <div className="text-center my-2">Or</div>
-            <Button
+            {/* <div className="text-center my-2">Or</div>
+       <Button
               className="w-full py-2 px-4 text-center bg-blue-600 rounded-md text-white text-sm hover:bg-blue-500"
               onClick={async () => {
                 setLoading(true);
-                await loginWithGoogle();
-                setLoading(false);
+                try {
+                  await loginWithGoogle();
+                  navigate("/dashboard"); // Navigate to dashboard on successful login
+                } catch (error) {
+                  console.error("Google login failed:", error);
+                  toast({
+                    title: "Error",
+                    description: "Google login failed. Please try again.",
+                  });
+                } finally {
+                  setLoading(false);
+                }
               }}>
               {loading ? (
                 <Lottie animationData={lottieLoader} loop={true} />
               ) : (
                 "Google Login"
               )}
-            </Button>
+            </Button> */}
           </div>
         </form>
         <p className="mt-4 text-center">

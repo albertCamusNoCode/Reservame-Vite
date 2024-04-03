@@ -2,7 +2,7 @@ import { addDays, format, startOfWeek, addWeeks } from "date-fns";
 import { SVGProps, useState, FC } from "react";
 import TimeGrid from "../TimeGrid/TimeGrid";
 import { Button } from "@/components/ui/button";
-import { addAppointment } from "../../data/appointment";
+import { addAppointment } from "../../data-actions/appointment";
 
 interface ChevronIconProps extends SVGProps<SVGSVGElement> {}
 
@@ -73,7 +73,6 @@ export const ClientScheduler: FC = () => {
       return;
     }
 
-
     const appointmentDate = new Date(selectedTimeSlot);
     try {
       await addAppointment({
@@ -89,47 +88,46 @@ export const ClientScheduler: FC = () => {
   };
 
   return (
-    <>
-      <div className="bg-white p-4 flex flex-col">
-        <p className="mt-2 text-sm text-gray-600">Zürich | Löwenstrasse 16</p>
-        <div className="mt-4 flex justify-between items-center">
-          <Button className="p-2" onClick={() => handleWeekChange("previous")}>
-            <ChevronLeftIcon className="h-6 w-6" />
-          </Button>
-          <div className="text-center">
-            <h2 className="text-lg font-semibold">
-              Week of {format(startOfWeek(currentWeek), "EEE, d MMMM")}
-            </h2>
-          </div>
-          <Button className="p-2" onClick={() => handleWeekChange("next")}>
-            <ChevronRightIcon className="h-6 w-6" />
-          </Button>
-        </div>
-        <div className="mt-4 flex overflow-x-auto space-x-4 justify-center">
+    <div key="1" className="bg-white p-8 rounded-lg shadow max-w-3xl mx-auto my-12">
+      <h1 className="text-2xl font-semibold mb-6">Auto Body | Reservations</h1>
+      <div className="flex justify-between items-center mb-6">
+        <ChevronLeftIcon className="text-gray-400 cursor-pointer" onClick={() => handleWeekChange("previous")} />
+        <div className="flex space-x-1">
           {Array.from({ length: 7 }).map((_, index) => {
             const day = addDays(startOfWeek(currentWeek), index);
             return (
-              <Button
-                key={index}
-                variant={
-                  selectedDate.toDateString() === day.toDateString()
-                    ? "default"
-                    : "outline"
-                }
-                onClick={() => handleSelectDate(day)}>
-                {format(day, "EEE, d MMM")}
-              </Button>
+              <div key={index} className="flex flex-col items-center">
+                <span className="text-sm font-medium text-gray-500">{format(day, "EEEE")}</span>
+                <Button
+                  className={selectedDate.toDateString() === day.toDateString() ? "bg-blue-100 text-blue-600" : "text-sm font-medium text-gray-500"}
+                  onClick={() => handleSelectDate(day)}>
+                  {format(day, "dd MMM")}
+                </Button>
+              </div>
             );
           })}
         </div>
+        <ChevronRightIcon className="text-gray-400 cursor-pointer" onClick={() => handleWeekChange("next")} />
       </div>
-
-      <div className="mt-4 flex flex-wrap justify-center gap-2">
+      <Button className="mb-4" variant="ghost">
+        Today
+      </Button>
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <div className="text-sm font-medium text-gray-500 mb-1">Selected Date</div>
+          <div className="text-lg font-semibold">{format(selectedDate, "EEE, MMMM do")}</div>
+        </div>
+        <div>
+          <div className="text-sm font-medium text-gray-500 mb-1">Selected Time</div>
+          <div className="text-lg font-semibold">{selectedTimeSlot ? format(selectedTimeSlot, "h:mm a") : "-"}</div>
+        </div>
+      </div>
+      <div className="flex space-x-2 mb-6">
         {["All Day", "Morning", "Afternoon", "Evening"].map((time) => (
           <Button
             key={time}
-            type="button"
-            variant={selectedToD === time ? "default" : "outline"}
+            className="flex-1"
+            variant={selectedToD === time ? "secondary" : "outline"}
             onClick={() => handleSelectToD(time)}>
             {time}
           </Button>
@@ -141,12 +139,12 @@ export const ClientScheduler: FC = () => {
         selectedTimeSlot={selectedTimeSlot}
         setSelectedTimeSlot={setSelectedTimeSlot}
       />
-
       <div className="flex justify-center mt-6">
-        <Button variant="default" onClick={handleContinue}>
+        <Button className="w-full" variant="outline" onClick={handleContinue}>
           Continue
         </Button>
       </div>
-    </>
+    </div>
   );
 };
+

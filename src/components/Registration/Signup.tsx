@@ -1,24 +1,21 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Added for navigation
-import { account, ID } from "../../lib/appwrite";
+import { useNavigate } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Lottie from "lottie-react";
 import lottieLoader from "../../../public/lottie-loader.json";
-import { useToast } from "@/components/ui/use-toast"; // Added for toast notification
+import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "../../data-actions/auth"; // Updated import to use useAuth
 
 const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const { toast } = useToast(); // Using toast
-  const navigate = useNavigate(); // Corrected for navigation
-
-  async function login(email: string, password: string) {
-    await account.createEmailSession(email, password);
-  }
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const { signup } = useAuth(); // Destructure signup from useAuth
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -32,8 +29,7 @@ const Signup = () => {
             e.preventDefault();
             setLoading(true);
             try {
-              await account.create(ID.unique(), email, password, name);
-              await login(email, password);
+              const userData = await signup(email, password, name);
               toast({
                 title: "Success",
                 description:
@@ -111,7 +107,7 @@ const Signup = () => {
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              navigate("/registration/login"); // Corrected navigation
+              navigate("/registration/login");
             }}>
             Login
           </a>

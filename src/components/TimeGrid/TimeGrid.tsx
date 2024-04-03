@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
-import { getAppointments } from "../../data/appointment"; // Updated import path
+import { getAppointments } from "../../data-actions/appointment"; // Updated import path
 import { Appointment } from "../../types"; // Updated import path
 
 type TimeSlot = {
@@ -18,7 +18,6 @@ interface TimeGridProps {
 }
 
 const TimeGrid: React.FC<TimeGridProps> = ({
-  selectedToD,
   selectedDate,
   selectedTimeSlot,
   setSelectedTimeSlot,
@@ -54,7 +53,7 @@ const TimeGrid: React.FC<TimeGridProps> = ({
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const appointmentsData = await getAppointments("1"); // Assuming "1" is your business ID
+        const appointmentsData = await getAppointments("660b88e229e05e16978e"); // Assuming "1" is your business ID
         setAppointments(appointmentsData); // Correctly setting the appointments
       } catch (error) {
         console.error("Failed to fetch appointments:", error);
