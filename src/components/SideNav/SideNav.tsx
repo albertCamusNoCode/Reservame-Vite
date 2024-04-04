@@ -1,7 +1,6 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import {
   CalendarIcon,
@@ -60,7 +59,6 @@ function classNames(...classes: string[]) {
 
 const SideNav = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [userAvatar, setUserAvatar] = useState<string>("");
   const navigate = useNavigate();
 
   // Removed useEffect hook for fetching user data
@@ -144,15 +142,6 @@ const SideNav = () => {
                         />
                         Logout
                       </Button>
-                      {/* Profile Icon */}
-                      <div className="pt-4">
-                        <Avatar>
-                          <AvatarImage
-                            src={userAvatar || "https://github.com/shadcn.png"}
-                          />
-                          <AvatarFallback>CN</AvatarFallback>
-                        </Avatar>
-                      </div>
                     </div>
                   </nav>
                 </div>
@@ -187,15 +176,6 @@ const SideNav = () => {
               />
               Logout
             </Button>
-            {/* Profile Icon for larger screens */}
-            <div className="pt-4">
-              <Avatar>
-                <AvatarImage
-                  src={userAvatar || "https://github.com/shadcn.png"}
-                />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            </div>
           </nav>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../data-actions/auth"; // Import auth from @auth as rest API functions from Xano
 import { Label } from "@/components/ui/label";
