@@ -6,10 +6,13 @@ import Registration from "./pages/Registration";
 import NoPage from "./pages/404";
 import { Toaster } from "./components/ui/toaster";
 import Reserva from "./pages/Reserva";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const App = () => {
   return (
+    
     <React.StrictMode>
+      <SpeedInsights/>
       <BrowserRouter>
         <Toaster />
         <Routes>
