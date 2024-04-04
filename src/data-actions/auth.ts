@@ -24,7 +24,8 @@ export const useAuth = () => {
       Cookies.set("authToken", authToken ?? '', { expires: 7, secure: true, sameSite: 'Strict' });
       axios.defaults.headers.common['Authorization'] = `Bearer ${authToken ?? ''}`;
     } else {
-      
+      Cookies.remove("authToken");
+      axios.defaults.headers.common['Authorization'] = '';
     }
   }, [user]);
 
@@ -36,14 +37,14 @@ export const useAuth = () => {
         password,
         name,
       });
-      console.log("API response:", response.data); // This will show you the structure of the response
-      const newUser: User = { id: '', email, name, createdAt: new Date(), activeBusiness: 0 }; // Assuming default values for missing properties
-      console.log("New user object:", newUser); // Add this right before setUser(newUser) in both signup and login functions
-      setUser(newUser);
+      console.log("API response:", response.data);
+      const { authToken } = response.data; // Assuming the authToken is part of the response
+      Cookies.set("authToken", authToken, { expires: 7, secure: true, sameSite: 'Strict' });
+      axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
+      await authMe(); // Fetch the latest user data after successful signup
       setLoading(false);
-      return newUser;
     } catch (err) {
-      console.error("Error in signup:", err); // Enhanced error handling as per instructions
+      console.error("Error in signup:", err);
       setError(err as Error);
       setLoading(false);
       throw err;
@@ -57,14 +58,14 @@ export const useAuth = () => {
         email,
         password,
       });
-      console.log("API response:", response.data); // This will show you the structure of the response
-      const newUser: User = { id: '', email, name: '', createdAt: new Date(), activeBusiness: 0 }; // Assuming default values for missing properties
-      console.log("New user object:", newUser); // Add this right before setUser(newUser) in both signup and login functions
-      setUser(newUser); // Assuming the user state structure accommodates this change
+      console.log("API response:", response.data);
+      const { authToken } = response.data; // Assuming the authToken is part of the response
+      Cookies.set("authToken", authToken, { expires: 7, secure: true, sameSite: 'Strict' });
+      axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
+      await authMe(); // Fetch the latest user data after successful login
       setLoading(false);
-      return newUser;
     } catch (err) {
-      console.error("Error in login:", err); // Enhanced error handling as per instructions
+      console.error("Error in login:", err);
       setError(err as Error);
       setLoading(false);
       throw err;
