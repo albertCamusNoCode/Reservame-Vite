@@ -1,104 +1,87 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { User } from "../types";
-import Cookies from "js-cookie";
+import { useCookies } from "react-cookie"; // Documentation: https://www.npmjs.com/package/react-cookie
 
 const API_BASE_URL = "https://xvnx-2txy-671y.n7c.xano.io/api:8LWq6rLJ"; // Replace with your Xano API endpoint
+const COOKIE_EXPIRATION_MS = 604800000; // 7 days in milliseconds
+const COOKIE_SECURE = false; // Secure parameter for cookie setting
+
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
+  const [cookies, setCookie] = useCookies(['_rsrvme_jwt']); // Utilizing react-cookie for cookie management
 
-  useEffect(() => {
-    const authToken = Cookies.get("authToken");
-    if (authToken) {
-      // If the authToken exists, fetch the user details from the server
-      authMe();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      const authToken = Cookies.get("authToken");
-      console.log("Saving authToken to cookies:", authToken);
-      Cookies.set("authToken", authToken ?? '', { expires: 7, secure: true, sameSite: 'Strict' });
-      axios.defaults.headers.common['Authorization'] = `Bearer ${authToken ?? ''}`;
-    } else {
-      Cookies.remove("authToken");
-      axios.defaults.headers.common['Authorization'] = '';
-    }
-  }, [user]);
-
-  const signup = async (email: string, password: string, name: string) => {
-    setLoading(true);
-    try {
-      const response = await axios.post(`${API_BASE_URL}/auth/signup`, {
-        email,
-        password,
-        name,
-      });
-      console.log("API response:", response.data);
-      const { authToken } = response.data; // Assuming the authToken is part of the response
-      Cookies.set("authToken", authToken, { expires: 7, secure: true, sameSite: 'Strict' });
-      axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
-      await authMe(); // Fetch the latest user data after successful signup
-      setLoading(false);
-    } catch (err) {
-      console.error("Error in signup:", err);
-      setError(err as Error);
-      setLoading(false);
-      throw err;
-    }
-  };
-
-  const login = async (email: string, password: string) => {
-    setLoading(true);
-    try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
-        email,
-        password,
-      });
-      console.log("API response:", response.data);
-      const { authToken } = response.data; // Assuming the authToken is part of the response
-      Cookies.set("authToken", authToken, { expires: 7, secure: true, sameSite: 'Strict' });
-      axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
-      await authMe(); // Fetch the latest user data after successful login
-      setLoading(false);
-    } catch (err) {
-      console.error("Error in login:", err);
-      setError(err as Error);
-      setLoading(false);
-      throw err;
-    }
-  };
-
-  const authMe = async () => {
+  const fetchUser = useCallback(async (authToken: string) => {
     setLoading(true);
     try {
       const response = await axios.get(`${API_BASE_URL}/auth/me`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get('authToken')}`,
+          Authorization: `Bearer ${authToken}`,
         },
       });
       const userData: User = {
         id: response.data.id,
         email: response.data.email,
         name: response.data.name,
-        createdAt: new Date(response.data.created_at), // Convert timestamp to Date object
-        phone: response.data.phone || undefined, // Use undefined if phone is not provided
-        googleOauth: response.data.google_oauth || undefined, // Use undefined if google_oauth is not provided
+        createdAt: new Date(response.data.created_at),
+        phone: response.data.phone || undefined,
+        googleOauth: response.data.google_oauth || undefined,
         activeBusiness: response.data.active_business,
       };
-      console.log("User from authMe:", userData); // Added console log
       setUser(userData);
-      setLoading(false);
-      return userData;
     } catch (err) {
-      console.error("Error in authMe:", err); // Enhanced error handling as per instructions
       setError(err as Error);
+    } finally {
       setLoading(false);
-      throw err;
+    }
+  }, []);
+
+  useEffect(() => {
+    const authToken = cookies._rsrvme_jwt;
+    if (authToken && !user) {
+      fetchUser(authToken);
+    }
+  }, [cookies._rsrvme_jwt, user, fetchUser]);
+
+  const setAuthToken = (authToken: string) => {
+    setCookie("_rsrvme_jwt", authToken, { path: '/', expires: new Date(Date.now() + COOKIE_EXPIRATION_MS), secure: COOKIE_SECURE, sameSite: 'strict' });
+    axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
+  };
+
+  const signup = async (email: string, password: string, name: string) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/signup`, { email, password, name });
+      const authToken = response.data.authToken;
+      setAuthToken(authToken);
+      await fetchUser(authToken);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
     }
   };
-  return { user, loading, error, signup, login, authMe, isLoggedIn: user !== null };
+
+  const login = async (email: string, password: string) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
+      if (response.status === 200) {
+        const authToken = response.data.authToken;
+        setAuthToken(authToken);
+        await fetchUser(authToken);
+      } else {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { user, loading, error, signup, login, isLoggedIn: !!cookies._rsrvme_jwt };
 };
+
