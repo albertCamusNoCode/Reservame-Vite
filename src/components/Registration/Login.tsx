@@ -27,17 +27,25 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(email, password);
-      toast({
-        title: "Success",
-        description: "You are now logged in.",
-      });
-      navigate("/dashboard"); // Navigate to dashboard on successful login
-    } catch (error) {
+      const response = await login(email, password);
+      if (response.authToken) {
+        toast({
+          title: "Success",
+          description: "You are now logged in.",
+        });
+        navigate("/dashboard");
+      } else {
+        throw new Error("Login failed: Invalid email or password.");
+      }
+    } catch (error: unknown) {
       console.error("Login failed:", error);
+      let errorMessage = "An unexpected error occurred.";
+      if (typeof error === "object" && error !== null && 'message' in error) {
+        errorMessage = (error as { message: string }).message;
+      }
       toast({
         title: "Error",
-        description: "Login failed. Please try again.",
+        description: errorMessage,
       });
     } finally {
       setLoading(false);

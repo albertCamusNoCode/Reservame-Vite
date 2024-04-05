@@ -75,19 +75,24 @@ export const useAuth = () => {
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<{ authToken?: string }> => {
     setLoading(true);
     try {
       const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
-      if (response.status === 200) {
+      if (response.status === 200 && response.data.authToken) {
         const authToken = response.data.authToken;
         setAuthToken(authToken);
         await fetchUser(authToken);
+        // Return an object with the authToken to resolve the TypeScript error
+        return { authToken };
       } else {
-        throw new Error(`Server responded with status: ${response.status}`);
+        // If the response status is 200 but there's no authToken, it means login failed
+        throw new Error(`Login failed: ${response.data.message || 'Invalid email or password'}`);
       }
     } catch (err) {
       setError(err as Error);
+      // It might be useful to rethrow the error or return an empty object to indicate failure
+      return {};
     } finally {
       setLoading(false);
     }
