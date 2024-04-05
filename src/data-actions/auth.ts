@@ -60,11 +60,16 @@ export const useAuth = () => {
     setLoading(true);
     try {
       const response = await axios.post(`${API_BASE_URL}/auth/signup`, { email, password, name });
-      const authToken = response.data.authToken;
-      setAuthToken(authToken);
-      await fetchUser(authToken);
+      if (response.data.authToken) {
+        const authToken = response.data.authToken;
+        setAuthToken(authToken);
+        await fetchUser(authToken);
+      } else {
+        throw new Error(`Signup failed: ${response.data.message || 'Unknown error'}`);
+      }
     } catch (err) {
       setError(err as Error);
+      throw err; // Rethrow the error to be handled by the caller
     } finally {
       setLoading(false);
     }

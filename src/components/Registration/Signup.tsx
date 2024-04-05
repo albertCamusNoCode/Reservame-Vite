@@ -21,6 +21,7 @@ const Signup = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [passwordsMatch, setPasswordsMatch] = useState(true); // State to track if passwords match
   const [name, setName] = useState<string>("");
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -28,28 +29,36 @@ const Signup = () => {
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setPasswordsMatch(false); // Set passwordsMatch to false if passwords do not match
+      toast({
+        title: "Error",
+        description: "Passwords do not match. Please try again.",
+      });
+      return;
+    }
     setLoading(true);
     try {
       await signup(email, password, name);
       toast({
         title: "Success",
-        description:
-          "Account created successfully. You are now logged in.",
+        description: "Account created successfully. You are now logged in.",
       });
-      navigate("/dashboard"); // Navigate to dashboard on successful login
+      navigate("/dashboard"); // Navigate to dashboard on successful signup
     } catch (error) {
       console.error("Failed to register account:", error);
       toast({
         title: "Error",
         description: "Failed to create account. Please try again.",
       });
+      return; // Ensure no further execution in case of error
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Card className="mx-auto max-w-md">
+    <Card className="mx-auto max-w-sm flex-grow"> {/* Adjusted to flex grow horizontally */}
       <CardHeader>
         <CardTitle className="text-2xl">Sign Up</CardTitle>
         <CardDescription>
@@ -93,13 +102,19 @@ const Signup = () => {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="confirm-password">Confirm Password</Label>
+            {!passwordsMatch && (
+              <div className="text-sm text-red-500">Passwords do not match.</div> // Display help text if passwords do not match
+            )}
             <Input
               id="confirm-password"
               type="password"
               placeholder="Confirm your password"
               required
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                setPasswordsMatch(true); // Reset passwordsMatch to true on change
+              }}
             />
           </div>
           <Button type="submit" className="w-full">

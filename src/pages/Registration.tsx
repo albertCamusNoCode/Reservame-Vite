@@ -13,11 +13,13 @@ function Registration() {
   }, [user, navigate]);
 
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="signup" element={<Signup />} />
-      <Route path="login" element={<Login />} />
-    </Routes>
+    <div className="flex justify-center items-center h-screen">
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="signup" element={<Signup />} />
+        <Route path="login" element={<Login />} />
+      </Routes>
+    </div>
   );
 }
 export default Registration;
