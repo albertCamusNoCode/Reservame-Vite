@@ -1,9 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../data-actions/auth"; // Import auth from @auth as rest API functions from Xano
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import Lottie from "lottie-react";
 import lottieLoader from "../../../public/lottie-loader.json";
 import { useToast } from "@/components/ui/use-toast"; // Added for toast notification
@@ -14,7 +21,7 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
   const { toast } = useToast(); // Using toast
   const navigate = useNavigate();
-  const { login, user } = useAuth(); // Destructure login, user, and isLoggedIn from useAuth
+  const { login } = useAuth(); // Destructure login, user, and isLoggedIn from useAuth
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,68 +45,65 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="w-full max-w-md px-8 py-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <h2 className="text-2xl font-semibold text-center text-gray-700 dark:text-white">
-          Login
-        </h2>
-        <div className="text-center my-4">
-          <p className="text-gray-600 dark:text-gray-300">
-            {user ? `Logged in as ${user.email}` : "Not logged in"}
-          </p>
-        </div>
-        <form
-          className="mt-8 space-y-3"
-          onSubmit={handleLogin}>
-          <div className="space-y-1">
+    <Card className="mx-auto max-w-sm">
+      <CardHeader>
+        <CardTitle className="text-2xl">Login</CardTitle>
+        <CardDescription>
+          Enter your email below to login to your account
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form className="grid gap-4" onSubmit={handleLogin}>
+          <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
-              placeholder="Enter your email"
-              required
               type="email"
+              placeholder="m@example.com"
+              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="space-y-1">
-            <Label htmlFor="password">Password</Label>
+          <div className="grid gap-2">
+            <div className="flex items-center">
+              <Label htmlFor="password">Password</Label>
+              {/* Removed Next Link for forgot password */}
+            </div>
             <Input
               id="password"
-              placeholder="Enter your password"
-              required
               type="password"
+              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className="flex items-center justify-between">
-            <Button
-              className="w-full py-2 px-4 text-center bg-indigo-600 rounded-md text-white text-sm hover:bg-indigo-500"
-              type="submit">
-              {loading ? (
-                <Lottie animationData={lottieLoader} loop={true} />
-              ) : (
-                "Login"
-              )}
-            </Button>
+          <Button type="submit" className="w-full">
+            {loading ? (
+              <Lottie animationData={lottieLoader} loop={true} />
+            ) : (
+              "Login"
+            )}
+          </Button>
+          {/* Removed "Login with Google" button as it's not implemented in the original code */}
+          <div className="mt-4 text-center text-sm">
+            Don't have an account?&nbsp;
+            <a
+              href="#"
+              className="underline"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/registration/signup"); // Corrected navigation
+              }}
+            >
+              Sign Up
+            </a>
           </div>
         </form>
-        <p className="mt-4 text-center">
-          Don't have an account?&nbsp;
-          <a
-            className="text-indigo-600 dark:text-indigo-400 hover:underline"
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate("/registration/signup"); // Corrected navigation
-            }}>
-            Sign Up
-          </a>
-        </p>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
 export default Login;
+

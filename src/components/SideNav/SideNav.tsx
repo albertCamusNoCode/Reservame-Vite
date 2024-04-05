@@ -14,6 +14,7 @@ import {
 
 import { SideNav as SideNavType } from "@/types";
 import { Button } from "@/components/ui/button"; // Import Button from UI components
+import { useAuth } from "@/data-actions/auth"; // Import useAuth hook for logout functionality
 
 const sideNavLabels: SideNavType[] = [
   {
@@ -60,6 +61,7 @@ function classNames(...classes: string[]) {
 const SideNav = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth(); // Destructure logout function from useAuth
 
   // Removed useEffect hook for fetching user data
 
@@ -69,7 +71,7 @@ const SideNav = () => {
   };
 
   const handleLogout = async () => {
-    // Simplified logout logic
+    await logout(); // Use logout function from useAuth
     navigate("/registration"); // Navigate to registration page after logout
   };
 
@@ -131,7 +133,6 @@ const SideNav = () => {
                           {item.label}
                         </Button>
                       ))}
-                      {/* Logout Button */}
                       <Button
                         onClick={handleLogout}
                         className="group flex items-center px-2 py-2 text-base font-medium rounded-md cursor-pointer"

@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import Lottie from "lottie-react";
 import lottieLoader from "../../../public/lottie-loader.json";
 import { useToast } from "@/components/ui/use-toast";
@@ -12,6 +20,7 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [name, setName] = useState<string>("");
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -40,83 +49,80 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="w-full max-w-md px-8 py-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <h2 className="text-2xl font-semibold text-center text-gray-700 dark:text-white">
-          Sign Up
-        </h2>
-        <form
-          className="mt-8 space-y-3"
-          onSubmit={handleSignup}>
-          <div className="space-y-1">
+    <Card className="mx-auto max-w-md">
+      <CardHeader>
+        <CardTitle className="text-2xl">Sign Up</CardTitle>
+        <CardDescription>
+          Create an account to get started
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form className="grid gap-4" onSubmit={handleSignup}>
+          <div className="grid gap-2">
             <Label htmlFor="name">Name</Label>
             <Input
               id="name"
+              type="text"
               placeholder="Enter your name"
               required
-              type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <div className="space-y-1">
+          <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              type="email"
               placeholder="Enter your email"
               required
-              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="space-y-1">
+          <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
+              type="password"
               placeholder="Enter your password"
               required
-              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className="space-y-1">
+          <div className="grid gap-2">
             <Label htmlFor="confirm-password">Confirm Password</Label>
             <Input
               id="confirm-password"
+              type="password"
               placeholder="Confirm your password"
               required
-              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
-          <div className="flex items-center justify-between">
-            <Button
-              className="w-full py-2 px-4 text-center bg-indigo-600 rounded-md text-white text-sm hover:bg-indigo-500"
-              type="submit">
-              {loading ? (
-                <Lottie animationData={lottieLoader} loop={true} />
-              ) : (
-                "Create Account"
-              )}
-            </Button>
-          </div>
+          <Button type="submit" className="w-full">
+            {loading ? (
+              <Lottie animationData={lottieLoader} loop={true} />
+            ) : (
+              "Create Account"
+            )}
+          </Button>
         </form>
-        <p className="mt-4 text-center">
-          Already have an account?&nbsp;
-          <a
-            className="text-indigo-600 dark:text-indigo-400 hover:underline"
-            href="#"
-            onClick={(e) => {
+        <div className="mt-4 text-center text-sm">
+          Already have an account?{" "}
+          <a href="#" className="underline" onClick={(e) => {
               e.preventDefault();
               navigate("/registration/login");
             }}>
             Login
           </a>
-        </p>
-      </div>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
 export default Signup;
+
