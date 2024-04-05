@@ -1,11 +1,16 @@
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+
 function Appointments() {
   
   return (
-    <>
-      <div>
-        <h1>This is the Appointment Page</h1>
-      </div>
-    </>
+    <Card>
+      <CardHeader>
+        <CardTitle>Appointments</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>This is the Appointment Page</p>
+      </CardContent>
+    </Card>
   );
 }
 export default Appointments;

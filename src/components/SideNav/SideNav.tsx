@@ -19,7 +19,7 @@ const SideNav = () => {
   ];
 
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[220px_1fr]">
       <div className="hidden border-r bg-muted/40 md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
@@ -40,7 +40,7 @@ const SideNav = () => {
                 <Link
                   key={item.label}
                   to={item.route}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground bg-muted/20 transition-all ${window.location.pathname === item.route ? 'text-white bg-primary/90' : 'hover:bg-primary/30'}`}
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-foreground bg-muted/20 transition-all ${window.location.pathname === item.route ? 'text-white bg-primary/90' : 'hover:bg-primary/30'}`}
                 >
                   <item.icon className="h-4 w-4" />
                   {item.label}
