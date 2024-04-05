@@ -6,6 +6,7 @@ import Registration from "./pages/Registration";
 import NoPage from "./pages/404";
 import { Toaster } from "./components/ui/toaster";
 import Reserva from "./pages/Reserva";
+import OAuth2Callback from "./pages/Oauth"; // Corrected import statement
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="dashboard/*" element={<Dashboard />} />
           <Route path="registration/*" element={<Registration />} />
           <Route path="reserva/*" element={<Reserva />} />
+          <Route path="oauth2/callback" element={<OAuth2Callback />} /> // Corrected route for OAuth2 callback
           <Route path="*" element={<NoPage />} />
         </Routes>
       </BrowserRouter>

@@ -59,3 +59,18 @@ type User = {
 } | null;
 export type { User };
 
+// Type for the response from initiating Google login
+interface GoogleInitiateLoginResponse {
+  authUrl?: string;
+}
+
+// Type for the response from continuing with Google login
+interface GoogleContinueLoginResponse {
+  token?: string;
+  name?: string;
+  email?: string;
+}
+
+export type { GoogleInitiateLoginResponse, GoogleContinueLoginResponse };
+
+

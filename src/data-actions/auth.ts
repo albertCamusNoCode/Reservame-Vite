@@ -100,6 +100,58 @@ export const useAuth = () => {
     }
   };
 
-  return { user, loading, error, signup, login, logout, isLoggedIn: !!cookies._rsrvme_jwt };
+  const initiateGoogleLogin = async (redirectUri: string): Promise<{ authUrl?: string }> => {
+    console.log("Initiating Google login process...");
+    setLoading(true);
+    try {
+      console.log(`Sending request to ${API_BASE_URL}/oauth/google/init with redirectUri: ${redirectUri}`);
+      const response = await axios.get(`${API_BASE_URL}/oauth/google/init`, { params: { redirect_uri: redirectUri } });
+      if (response.status === 200 && response.data && 'authUrl' in response.data) {
+        console.log("Received authUrl from response, Google login initiation successful.");
+        // Return an object with the authUrl to resolve the TypeScript error
+        return { authUrl: response.data.authUrl };
+      } else {
+        // If the response status is 200 but there's no authUrl, it means initiation failed
+        const errorMessage = response.data && response.data.message ? response.data.message : 'Failed to initiate Google login';
+        console.error(`Google login initiation failed: ${errorMessage}`);
+        throw new Error(`Google login initiation failed: ${errorMessage}`);
+      }
+    } catch (err) {
+      console.error("Error during Google login initiation:", err);
+      setError(err as Error);
+      // It might be useful to rethrow the error or return an empty object to indicate failure
+      return {};
+    } finally {
+      console.log("Google login initiation process completed.");
+      setLoading(false);
+    }
+  };
+  const continueWithGoogle = async (code: string, redirectUri: string): Promise<{ token?: string, name?: string, email?: string }> => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/oauth/google/continue`, { params: { code, redirect_uri: redirectUri } });
+      if (response.status === 200 && response.data && 'token' in response.data) {
+        const { token, name, email } = response.data;
+        setAuthToken(token);
+        // Assuming fetchUser function can accept token to fetch and set user details
+        await fetchUser(token);
+        // Return an object with the token, name, and email to resolve the TypeScript error
+        return { token, name, email };
+      } else {
+        // If the response status is 200 but there's no token, it means continuation failed
+        const errorMessage = response.data && response.data.message ? response.data.message : 'Failed to continue with Google';
+        throw new Error(`Google continuation failed: ${errorMessage}`);
+      }
+    } catch (err) {
+      setError(err as Error);
+      // It might be useful to rethrow the error or return an empty object to indicate failure
+      return {};
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { user, loading, error, setAuthToken, continueWithGoogle, initiateGoogleLogin, signup, login, logout, isLoggedIn: !!cookies._rsrvme_jwt };
 };
+
 
