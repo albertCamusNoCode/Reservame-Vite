@@ -3,7 +3,7 @@ import axios from "axios";
 import { User } from "../types";
 import { useCookies } from "react-cookie"; // Documentation: https://www.npmjs.com/package/react-cookie
 
-const API_BASE_URL = "https://xvnx-2txy-671y.n7c.xano.io/api:8LWq6rLJ"; // Replace with your Xano API endpoint
+const API_BASE_URL = "https://reservame.mx/api:h1KIKrRI"; // Replace with your Xano API endpoint
 const COOKIE_EXPIRATION_MS = 604800000; // 7 days in milliseconds
 const COOKIE_SECURE = false; // Secure parameter for cookie setting
 

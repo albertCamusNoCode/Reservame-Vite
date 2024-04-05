@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Business } from "../types";
 
-const API_BASE_URL = "https://xvnx-2txy-671y.n7c.xano.io/api:yvsnt5w1";
+const API_BASE_URL = "https://reservame.mx/api:atCKEPpl";
 
 export const getBusinesses = async () => {
   try {

@@ -3,44 +3,7 @@ import { SVGProps, useState, FC } from "react";
 import TimeGrid from "../TimeGrid/TimeGrid";
 import { Button } from "@/components/ui/button";
 import { addAppointment } from "../../data-actions/appointment";
-
-interface ChevronIconProps extends SVGProps<SVGSVGElement> {}
-
-const ChevronLeftIcon: FC<ChevronIconProps> = (props) => {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round">
-      <path d="m15 18-6-6 6-6" />
-    </svg>
-  );
-};
-
-const ChevronRightIcon: FC<ChevronIconProps> = (props) => {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round">
-      <path d="m9 18 6-6-6-6" />
-    </svg>
-  );
-};
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 export const ClientScheduler: FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
