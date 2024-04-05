@@ -79,7 +79,8 @@ export const useAuth = () => {
     setLoading(true);
     try {
       const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
-      if (response.status === 200 && response.data.authToken) {
+      // Check if response.data exists and has an authToken property
+      if (response.status === 200 && response.data && 'authToken' in response.data) {
         const authToken = response.data.authToken;
         setAuthToken(authToken);
         await fetchUser(authToken);
@@ -87,7 +88,8 @@ export const useAuth = () => {
         return { authToken };
       } else {
         // If the response status is 200 but there's no authToken, it means login failed
-        throw new Error(`Login failed: ${response.data.message || 'Invalid email or password'}`);
+        const errorMessage = response.data && response.data.message ? response.data.message : 'Invalid email or password';
+        throw new Error(`Login failed: ${errorMessage}`);
       }
     } catch (err) {
       setError(err as Error);
