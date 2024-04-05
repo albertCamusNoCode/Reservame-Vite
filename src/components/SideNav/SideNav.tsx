@@ -34,13 +34,13 @@ const SideNav = () => {
               <span className="sr-only">Toggle notifications</span>
             </button>
           </div>
-          <div className="flex-1 hover:bg-white rounded-b-lg">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+          <div className="flex-1">
+            <nav className="grid items-start px-2 gap-2 text-sm font-medium lg:px-4">
               {navItems.map((item) => (
                 <Link
                   key={item.label}
                   to={item.route}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground bg-muted/20 transition-all ${window.location.pathname === item.route ? 'text-white bg-primary/90' : 'hover:bg-primary/30'}`}
                 >
                   <item.icon className="h-4 w-4" />
                   {item.label}
@@ -62,3 +62,5 @@ const SideNav = () => {
 };
 
 export default SideNav;
+
+

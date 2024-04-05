@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, Routes, Route } from "react-router-dom";
+import { useNavigate, Routes, Route, useLocation } from "react-router-dom";
 import SideNav from "@/components/SideNav/SideNav";
 import Appointments from "@/components/Dashboard/Appointments";
 import Clients from "@/components/Dashboard/Clients";
@@ -10,20 +10,23 @@ import { useAuth } from "../data-actions/auth"; // Import useAuth for authentica
 
 function Dashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isLoggedIn } = useAuth(); // Destructure isLoggedIn from useAuth
 
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/registration");
+    } else if (location.pathname === "/dashboard" || location.pathname === "/dashboard/") {
+      navigate("/dashboard/appointments");
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, navigate, location.pathname]);
 
   if (!isLoggedIn) return null;
 
   return (
     <div className="flex h-screen">
       <SideNav />
-      <div className="flex-1 p-10">
+      <div className="flex-grow w-full">
         <h1>this is the Dashboard</h1>
         <Routes>
           <Route path="appointments" element={<Appointments />} />
