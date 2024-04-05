@@ -1,7 +1,7 @@
-import { ClientScheduler } from "@/components/ClientScheduler/ClientScheduler";
+import ReservaSteps from "@/components/Reserva/ReservaSteps";
 
 function Reserva() {
-    return <ClientScheduler />;
+    return <ReservaSteps />;
   }
   export default Reserva;
   

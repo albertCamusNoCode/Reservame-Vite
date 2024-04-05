@@ -30,12 +30,13 @@ export type { Business };
 
 interface Appointment {
   id?: string;
-  created_at?: Date;
+  created_at?: number;
   business_id: string;
   client_phone?: string;
   client_id?: string;
-  appt_time: Date;
+  appt_time: number;
   appt_duration: number;
+  business_service_id: string;
 }
 export type { Appointment };
 

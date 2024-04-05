@@ -3,20 +3,65 @@ import { Appointment } from "../types";
 
 const API_BASE_URL = "https://reservame.mx/api:atCKEPpl";
 
-export const getAppointments = async (): Promise<Appointment[]> => {
+export const getAppointments = async (input: {
+  business_id: string,
+  date_from: number,
+  date_to: number
+}): Promise<Appointment[]> => {
   try {
-    const response = await axios.get<Appointment[]>(`${API_BASE_URL}/appointment`);
-    return response.data;
+    const { business_id, date_from, date_to } = input;
+    const response = await axios.get<{data: Appointment[]}>(`${API_BASE_URL}/appointments`, {
+      params: {
+        business_id,
+        date_from,
+        date_to
+      }
+    });
+    if (!response.data.data) {
+      throw new Error("No data received from the server");
+    }
+    const appointments = response.data.data.map(appointment => {
+      if (!appointment.created_at) {
+        throw new Error("Appointment creation date is missing");
+      }
+      return {
+        ...appointment,
+        createdAt: new Date(appointment.created_at).toISOString(),
+      };
+    });
+    return appointments;
   } catch (error) {
-    console.error("Error fetching appointments:", error);
+    console.error("Failed to fetch appointments:", error);
     throw error;
   }
 };
 
-export const addAppointment = async (appointmentData: Appointment): Promise<Appointment> => {
+export const addAppointment = async (appointmentData: {
+  business_id: string;
+  client_phone: string;
+  appt_time: string | null;
+  appt_duration: number;
+  business_service_id: string;
+}): Promise<Appointment> => {
   try {
-    const response = await axios.post<Appointment>(`${API_BASE_URL}/appointment`, appointmentData);
-    return response.data;
+    const response = await axios.post<{data: Appointment}>(`${API_BASE_URL}/appointment`, {
+      business_id: appointmentData.business_id,
+      client_phone: appointmentData.client_phone,
+      appt_time: appointmentData.appt_time,
+      appt_duration: appointmentData.appt_duration,
+      business_service_id: appointmentData.business_service_id,
+    });
+    const appointmentResponse: Appointment = {
+      id: response.data.data.id,
+      created_at: response.data.data.created_at,
+      business_id: response.data.data.business_id,
+      client_phone: response.data.data.client_phone,
+      client_id: response.data.data.client_id,
+      appt_time: response.data.data.appt_time,
+      appt_duration: response.data.data.appt_duration,
+      business_service_id: response.data.data.business_service_id,
+    };
+    return appointmentResponse;
   } catch (error) {
     console.error("Error adding appointment:", error);
     throw error;
@@ -34,8 +79,18 @@ export const deleteAppointment = async (appointmentId: string): Promise<void> =>
 
 export const getAppointmentById = async (appointmentId: string): Promise<Appointment> => {
   try {
-    const response = await axios.get<Appointment>(`${API_BASE_URL}/appointment/${appointmentId}`);
-    return response.data;
+    const response = await axios.get<{data: Appointment}>(`${API_BASE_URL}/appointment/${appointmentId}`);
+    const formattedResponse: Appointment = {
+      id: response.data.data.id,
+      created_at: response.data.data.created_at,
+      business_id: response.data.data.business_id,
+      client_phone: response.data.data.client_phone,
+      client_id: response.data.data.client_id,
+      appt_time: response.data.data.appt_time,
+      appt_duration: response.data.data.appt_duration,
+      business_service_id: response.data.data.business_service_id,
+    };
+    return formattedResponse;
   } catch (error) {
     console.error("Error fetching appointment by ID:", error);
     throw error;

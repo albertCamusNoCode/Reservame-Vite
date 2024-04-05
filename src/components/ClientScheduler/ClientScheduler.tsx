@@ -1,5 +1,5 @@
 import { addDays, format, startOfWeek, addWeeks } from "date-fns";
-import { SVGProps, useState, FC } from "react";
+import { useState, FC } from "react";
 import TimeGrid from "../TimeGrid/TimeGrid";
 import { Button } from "@/components/ui/button";
 import { addAppointment } from "../../data-actions/appointment";
@@ -37,12 +37,14 @@ export const ClientScheduler: FC = () => {
       return;
     }
 
-    const appointmentDate = new Date(selectedTimeSlot);
+    const appointmentDate = selectedTimeSlot ? selectedTimeSlot.toISOString() : null;
     try {
       await addAppointment({
         business_id: businessId, // businessId is now guaranteed to be a string, not null
+        client_phone: "000-000-0000", // Placeholder value, replace with actual client phone
         appt_time: appointmentDate,
-        appt_duration: 30, // Assuming 60 minutes for the duration/ Using current date-time as created_at
+        appt_duration: 30, // Assuming 30 minutes for the duration
+        business_service_id: "serviceIdPlaceholder", // Placeholder value, replace with actual service ID
       });
       alert("Appointment booked successfully.");
       // Optionally reset state or redirect the user
@@ -53,7 +55,7 @@ export const ClientScheduler: FC = () => {
   };
 
   return (
-    <div key="1" className="bg-white p-8 rounded-lg shadow max-w-3xl mx-auto my-12">
+    <div className="bg-white p-8 rounded-lg shadow max-w-3xl mx-auto my-12">
       <h1 className="text-2xl font-semibold mb-6">Auto Body | Reservations</h1>
       <div className="flex justify-between items-center mb-6">
         <ChevronLeftIcon className="text-gray-400 cursor-pointer" onClick={() => handleWeekChange("previous")} />
