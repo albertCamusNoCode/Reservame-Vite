@@ -1,6 +1,6 @@
-import { ClientScheduler } from "./ClientScheduler";
+import { SchedulerStep } from "./SchedulerStep";
 
 export default function SchedulerComponent() {
-  return <ClientScheduler />;
+  return <SchedulerStep />;
 }
 

@@ -8,7 +8,7 @@ import { getBusinessPublicRecordById } from "@/data-actions/business.public";
 import { Appointment, BusinessPublic } from "@/types";
 import { Card } from "../ui/card";
 
-export const ClientScheduler: FC = () => {
+export const SchedulerStep: FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentWeek, setCurrentWeek] = useState<Date>(new Date());
   const [selectedToD, setSelectedToD] = useState<string>("All Day");
