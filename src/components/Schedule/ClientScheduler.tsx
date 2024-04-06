@@ -1,32 +1,40 @@
 import { addDays, format, startOfWeek, addWeeks } from "date-fns";
 import { useState, FC, useEffect } from "react";
-import TimeGrid from "../TimeGrid/TimeGrid";
+import TimeGrid from "./TimeGrid";
 import { Button } from "@/components/ui/button";
-import { addAppointment, getAppointments } from "../../data-actions/appointment";
+import { addAppointment } from "../../data-actions/appointment";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { getBusinessPublicRecordById } from "@/data-actions/business.public";
+import { Appointment, BusinessPublic } from "@/types";
+import { Card } from "../ui/card";
 
 export const ClientScheduler: FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentWeek, setCurrentWeek] = useState<Date>(new Date());
   const [selectedToD, setSelectedToD] = useState<string>("All Day");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null);
-  const [appointments, setAppointments] = useState([]);
+  const [appointments] = useState<Appointment[]>([]);
+  const [businessPublic, setBusinessPublic] = useState<BusinessPublic | null>(null);
 
   const handleSelectDate = (date: Date): void => {
     setSelectedDate(date);
+    setSelectedTimeSlot(null);
   };
 
   const handleSelectToD = (time: string): void => {
     setSelectedToD(time);
   };
 
-  const handleWeekChange = (direction: "next" | "previous"): void => {
-    const newWeek =
-      direction === "next"
-        ? addWeeks(currentWeek, 1)
-        : addWeeks(currentWeek, -1);
+  const handleWeekChange = (direction: "next" | "previous" | "current"): void => {
+    let newWeek = currentWeek;
+    if (direction === "next") {
+      newWeek = addWeeks(currentWeek, 1);
+    } else if (direction === "previous") {
+      newWeek = addWeeks(currentWeek, -1);
+    } else if (direction === "current") {
+      newWeek = new Date(); // Resets to the current week
+    }
     setCurrentWeek(newWeek);
-    setSelectedDate(startOfWeek(newWeek));
   };
 
   const queryParams = new URLSearchParams(window.location.search);
@@ -55,25 +63,22 @@ export const ClientScheduler: FC = () => {
     }
   };
 
-  const fetchAppointments = async () => {
-    const startOfDay = new Date(selectedDate.setHours(0, 0, 0, 0)).getTime();
-    const endOfDay = new Date(selectedDate.setHours(23, 59, 59, 999)).getTime();
-    try {
-      const response = await getAppointments({ business_id: businessId, date_from: startOfDay, date_to: endOfDay });
-      setAppointments(response); // Update state with fetched appointments
-      console.log("Fetched appointments:", response); // Log fetched appointments
-    } catch (error) {
-      console.error("Failed to fetch appointments:", error);
-    }
-  };
 
+  
+   // Fetch business.public on page load
   useEffect(() => {
-    fetchAppointments(); // Fetch appointments when component mounts or selectedDate changes
-  }, [selectedDate]);
+    getBusinessPublicRecordById(businessId).then((response) => {
+        console.log("Public Business:", response);
+        setBusinessPublic(response);
+    });
+  }, []);
 
+
+
+  if (!businessPublic) return null;
   return (
     <div className="bg-white p-8 rounded-lg shadow max-w-3xl mx-auto my-12">
-      <h1 className="text-2xl font-semibold mb-6">Auto Body | Reservations</h1>
+      <h1 className="text-2xl font-semibold mb-6 flex justify-center">{businessPublic?.business_name} | Reservations</h1>
       <div className="flex justify-between items-center mb-6">
         <ChevronLeftIcon className="text-gray-400 cursor-pointer" onClick={() => handleWeekChange("previous")} />
         <div className="flex space-x-1">
@@ -83,7 +88,7 @@ export const ClientScheduler: FC = () => {
               <div key={index} className="flex flex-col items-center">
                 <span className="text-sm font-medium text-gray-500">{format(day, "EEEE")}</span>
                 <Button
-                  className={selectedDate.toDateString() === day.toDateString() ? "bg-blue-100 text-blue-600" : "text-sm font-medium text-gray-500"}
+                  variant={selectedDate.toDateString() === day.toDateString() ? "default" : "outline"}
                   onClick={() => handleSelectDate(day)}>
                   {format(day, "dd MMM")}
                 </Button>
@@ -93,10 +98,11 @@ export const ClientScheduler: FC = () => {
         </div>
         <ChevronRightIcon className="text-gray-400 cursor-pointer" onClick={() => handleWeekChange("next")} />
       </div>
-      <Button className="mb-4" variant="ghost">
+      <Button className="mb-4" variant="outline" onClick={() => { handleSelectDate(new Date()); handleWeekChange("current"); }}>
         Today
       </Button>
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <Card className="p-6 flex flex-col flex-shrink mb-4">
+        <div className="grid grid-cols-2 gap-4">
         <div>
           <div className="text-sm font-medium text-gray-500 mb-1">Selected Date</div>
           <div className="text-lg font-semibold">{format(selectedDate, "EEE, MMMM do")}</div>
@@ -106,12 +112,13 @@ export const ClientScheduler: FC = () => {
           <div className="text-lg font-semibold">{selectedTimeSlot ? format(selectedTimeSlot, "h:mm a") : "-"}</div>
         </div>
       </div>
+      </Card>
       <div className="flex space-x-2 mb-6">
         {["All Day", "Morning", "Afternoon", "Evening"].map((time) => (
           <Button
             key={time}
             className="flex-1"
-            variant={selectedToD === time ? "secondary" : "outline"}
+            variant={selectedToD === time ? "default" : "outline"}
             onClick={() => handleSelectToD(time)}>
             {time}
           </Button>
@@ -122,9 +129,10 @@ export const ClientScheduler: FC = () => {
         selectedDate={selectedDate}
         selectedTimeSlot={selectedTimeSlot}
         setSelectedTimeSlot={setSelectedTimeSlot}
+        businessId={businessId}
       />
       <div className="flex justify-center mt-6">
-        <Button className="w-full" variant="outline" onClick={fetchAppointments}>
+        <Button className="w-full" variant={selectedTimeSlot ? "default" : "unclickable"} onClick={handleContinue}>
           Continue
         </Button>
       </div>

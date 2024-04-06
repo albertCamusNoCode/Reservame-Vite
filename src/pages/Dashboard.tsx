@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, Routes, Route, useLocation, Link } from "react-router-dom";
-import SideNav from "@/components/SideNav/SideNav";
+import SideNav from "@/components/Dashboard/SideNav";
 import Appointments from "@/components/Dashboard/Appointments";
 import Clients from "@/components/Dashboard/Clients";
 import Integrations from "@/components/Dashboard/Integrations.tsx";

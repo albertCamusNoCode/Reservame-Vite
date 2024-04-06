@@ -1,5 +1,5 @@
 import { createBoard } from "@wixc3/react-board";
-import SideNav from "../../components/SideNav/SideNav";
+import SideNav from "../../components/Dashboard/SideNav";
 
 export default createBoard({
   name: "SideNav",

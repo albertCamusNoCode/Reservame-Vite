@@ -28,6 +28,7 @@ interface Business {
 
 export type { Business };
 
+
 interface Appointment {
   id?: string;
   created_at?: number;
@@ -46,6 +47,7 @@ interface BusinessPublic {
   days_open: number[];
   appt_interval: number;
   is_active: boolean;
+  business_name: string;
 }
 export type { BusinessPublic };
 

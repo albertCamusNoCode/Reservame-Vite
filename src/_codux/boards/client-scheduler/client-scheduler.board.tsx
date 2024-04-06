@@ -1,5 +1,5 @@
 import { createBoard } from "@wixc3/react-board";
-import { ClientScheduler } from "../../../components/ClientScheduler/ClientScheduler";
+import { ClientScheduler } from "../../../components/Schedule/ClientScheduler";
 
 export default createBoard({
   name: "ClientScheduler",

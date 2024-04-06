@@ -32,9 +32,9 @@ export const deleteBusinessPublicRecord = async (businessPublicId: string): Prom
   }
 };
 
-export const getBusinessPublicRecordById = async (businessPublicId: string): Promise<BusinessPublic> => {
+export const getBusinessPublicRecordById = async (businessId: string): Promise<BusinessPublic> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/business_public/${businessPublicId}`);
+    const response = await axios.get(`${API_BASE_URL}/business_public/${businessId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching business public record by ID:", error);
