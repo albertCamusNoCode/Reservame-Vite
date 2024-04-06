@@ -1,21 +1,18 @@
 import { addDays, format, startOfWeek, addWeeks } from "date-fns";
-import { useState, FC, useEffect } from "react";
+import { useState } from "react";
 import TimeGrid from "./TimeGrid";
 import { Button } from "@/components/ui/button";
 import { addAppointment } from "../../data-actions/appointment";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { getBusinessPublicRecordById } from "@/data-actions/business.public";
 import { Appointment, BusinessPublic } from "@/types";
 import { Card } from "../ui/card";
 
-export const SchedulerStep: FC = () => {
+export const SchedulerStep = ({ businessPublic, businessId }: { businessPublic: BusinessPublic | null, businessId: string }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentWeek, setCurrentWeek] = useState<Date>(new Date());
   const [selectedToD, setSelectedToD] = useState<string>("All Day");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null);
   const [appointments] = useState<Appointment[]>([]);
-  const [businessPublic, setBusinessPublic] = useState<BusinessPublic | null>(null);
-
   const handleSelectDate = (date: Date): void => {
     setSelectedDate(date);
     setSelectedTimeSlot(null);
@@ -37,8 +34,7 @@ export const SchedulerStep: FC = () => {
     setCurrentWeek(newWeek);
   };
 
-  const queryParams = new URLSearchParams(window.location.search);
-  const businessId = queryParams.get('bid') || ''; // Ensuring businessId is never null
+
 
   const handleContinue = async () => {
     if (!selectedTimeSlot) {
@@ -63,30 +59,20 @@ export const SchedulerStep: FC = () => {
     }
   };
 
-
-  
-   // Fetch business.public on page load
-  useEffect(() => {
-    getBusinessPublicRecordById(businessId).then((response) => {
-        console.log("Public Business:", response);
-        setBusinessPublic(response);
-    });
-  }, []);
-
-
-
   if (!businessPublic) return null;
   return (
-    <div className="bg-white p-8 rounded-lg shadow max-w-3xl mx-auto my-12">
-      <h1 className="text-2xl font-semibold mb-6 flex justify-center">{businessPublic?.business_name} | Reservations</h1>
+    <div>
       <div className="flex justify-between items-center mb-6">
-        <ChevronLeftIcon className="text-gray-400 cursor-pointer" onClick={() => handleWeekChange("previous")} />
-        <div className="flex space-x-1">
+      <Button className="mt-7" size="icon" variant="outline" onClick={() => handleWeekChange("previous")}>
+      <ChevronLeftIcon className="h-5 w-5" />
+        <span className="sr-only">Previous Week</span>
+      </Button>
+        <div className="flex space-x-2">
           {Array.from({ length: 7 }).map((_, index) => {
             const day = addDays(startOfWeek(currentWeek), index);
             return (
               <div key={index} className="flex flex-col items-center">
-                <span className="text-sm font-medium text-gray-500">{format(day, "EEEE")}</span>
+                <span className="text-sm font-medium text-gray-500 mb-2">{format(day, "EEEE")}</span>
                 <Button
                   variant={selectedDate.toDateString() === day.toDateString() ? "default" : "outline"}
                   onClick={() => handleSelectDate(day)}>
@@ -96,7 +82,10 @@ export const SchedulerStep: FC = () => {
             );
           })}
         </div>
-        <ChevronRightIcon className="text-gray-400 cursor-pointer" onClick={() => handleWeekChange("next")} />
+        <Button className="mt-7" size="icon" variant="outline" onClick={() => handleWeekChange("next")}>
+      <ChevronRightIcon className="h-5 w-5" />
+        <span className="sr-only">Next Week</span>
+      </Button>
       </div>
       <Button className="mb-4" variant="outline" onClick={() => { handleSelectDate(new Date()); handleWeekChange("current"); }}>
         Today
@@ -149,3 +138,4 @@ export const SchedulerStep: FC = () => {
     </div>
   );
 };
+
