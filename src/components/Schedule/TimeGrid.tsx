@@ -77,7 +77,7 @@ const TimeGrid: React.FC<TimeGridProps> = ({
 
   return (
     <>
-      <div className={`mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2`}>
+      <div className={`mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2`}>
         {timeSlots.map((slot: TimeSlot, index: number) => (
           <Button
             key={index}
@@ -92,7 +92,7 @@ const TimeGrid: React.FC<TimeGridProps> = ({
             onClick={() =>
               !isTimeSlotBooked(slot) && setSelectedTimeSlot(slot.start)
             }>
-            {formatTime(slot.start)}
+            {formatTime(slot.start).replace(/^0/, '')}
           </Button>
         ))}
       </div>

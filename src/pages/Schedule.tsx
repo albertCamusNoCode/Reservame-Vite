@@ -1,4 +1,4 @@
-import SchedulerComponent from "@/components/Schedule/ScheduleParent";
+import SchedulerComponent from "@/components/Schedule/SchedulerParent";
 
 function Schedule() {
     return <SchedulerComponent />;

@@ -4,7 +4,7 @@ import SideNav from "@/components/Dashboard/SideNav";
 import Appointments from "@/components/Dashboard/Appointments";
 import Clients from "@/components/Dashboard/Clients";
 import Integrations from "@/components/Dashboard/Integrations.tsx";
-import Scheduler from "@/components/Dashboard/Scheduler";
+import ManageScheduler from "@/components/Dashboard/ManageScheduler";
 import Services from "@/components/Dashboard/Services";
 import { useAuth } from "../data-actions/auth"; // Import useAuth for authentication
 import {
@@ -54,7 +54,7 @@ function Dashboard() {
           <Route path="appointments" element={<Appointments />} />
           <Route path="clients" element={<Clients />} />
           <Route path="integrations" element={<Integrations />} />
-          <Route path="scheduler" element={<Scheduler />} />
+          <Route path="scheduler" element={<ManageScheduler />} />
           <Route path="services" element={<Services />} />
         </Routes>
       </div>
