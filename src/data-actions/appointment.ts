@@ -3,39 +3,20 @@ import { Appointment } from "../types";
 
 const API_BASE_URL = "https://reservame.mx/api:atCKEPpl";
 
-export const getAppointments = async (input: {
+export const getAppointments = async ({ business_id, date_from, date_to }: {
   business_id: string,
   date_from: number,
   date_to: number
 }): Promise<Appointment[]> => {
-  try {
-    const { business_id, date_from, date_to } = input;
-    const response = await axios.get<{data: Appointment[]}>(`${API_BASE_URL}/appointments`, {
-      params: {
-        business_id,
-        date_from,
-        date_to
-      }
-    });
-    if (!response.data.data) {
-      throw new Error("No data received from the server");
+  const response = await axios.get(`${API_BASE_URL}/appointments`, {
+    params: {
+      business_id,
+      date_from,
+      date_to
     }
-    const appointments = response.data.data.map(appointment => {
-      if (!appointment.created_at) {
-        throw new Error("Appointment creation date is missing");
-      }
-      return {
-        ...appointment,
-        createdAt: new Date(appointment.created_at).toISOString(),
-      };
-    });
-    return appointments;
-  } catch (error) {
-    console.error("Failed to fetch appointments:", error);
-    throw error;
-  }
-};
-
+  });
+  return response.data;
+}
 export const addAppointment = async (appointmentData: {
   business_id: string;
   client_phone: string;

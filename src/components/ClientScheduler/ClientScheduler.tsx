@@ -1,16 +1,16 @@
 import { addDays, format, startOfWeek, addWeeks } from "date-fns";
-import { useState, FC } from "react";
+import { useState, FC, useEffect } from "react";
 import TimeGrid from "../TimeGrid/TimeGrid";
 import { Button } from "@/components/ui/button";
-import { addAppointment } from "../../data-actions/appointment";
+import { addAppointment, getAppointments } from "../../data-actions/appointment";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { getAppointments } from "../../data-actions/appointment";
 
 export const ClientScheduler: FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentWeek, setCurrentWeek] = useState<Date>(new Date());
   const [selectedToD, setSelectedToD] = useState<string>("All Day");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null);
+  const [appointments, setAppointments] = useState([]);
 
   const handleSelectDate = (date: Date): void => {
     setSelectedDate(date);
@@ -32,7 +32,7 @@ export const ClientScheduler: FC = () => {
   const queryParams = new URLSearchParams(window.location.search);
   const businessId = queryParams.get('bid') || ''; // Ensuring businessId is never null
 
- const handleContinue = async () => {
+  const handleContinue = async () => {
     if (!selectedTimeSlot) {
       alert("Please select a time slot.");
       return;
@@ -56,18 +56,20 @@ export const ClientScheduler: FC = () => {
   };
 
   const fetchAppointments = async () => {
-    const queryParams = new URLSearchParams(window.location.search);
-    const businessId = queryParams.get('bid') || ''; // Default to empty string if not found
     const startOfDay = new Date(selectedDate.setHours(0, 0, 0, 0)).getTime();
     const endOfDay = new Date(selectedDate.setHours(23, 59, 59, 999)).getTime();
     try {
       const response = await getAppointments({ business_id: businessId, date_from: startOfDay, date_to: endOfDay });
-      const appointmentsData = response; // Directly use the response, assuming it's already in the correct format
-      console.log("Fetched appointments:", appointmentsData); // Log fetched appointments
+      setAppointments(response); // Update state with fetched appointments
+      console.log("Fetched appointments:", response); // Log fetched appointments
     } catch (error) {
       console.error("Failed to fetch appointments:", error);
     }
   };
+
+  useEffect(() => {
+    fetchAppointments(); // Fetch appointments when component mounts or selectedDate changes
+  }, [selectedDate]);
 
   return (
     <div className="bg-white p-8 rounded-lg shadow max-w-3xl mx-auto my-12">
@@ -126,7 +128,16 @@ export const ClientScheduler: FC = () => {
           Continue
         </Button>
       </div>
+      <div className="mt-6">
+        <h2 className="text-lg font-semibold mb-4">Appointments</h2>
+        <ul>
+          {appointments.map((appointment, index) => (
+            <li key={index} className="mb-2">
+              {format(new Date(appointment.appt_time), "EEE, MMMM do, h:mm a")} - {appointment.client_phone}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
-
