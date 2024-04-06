@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import React, { useState, useEffect } from "react";
-import { getAppointments } from "../../data-actions/appointment"; // Updated import path
+import React, { useState, useEffect } from "react";// Updated import path
 import { Appointment } from "../../types"; // Updated import path
 
 type TimeSlot = {
@@ -48,25 +47,8 @@ const TimeGrid: React.FC<TimeGridProps> = ({
   };
 
   const timeSlots: TimeSlots = React.useMemo(generateTimeSlots, [selectedDate]);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      const queryParams = new URLSearchParams(window.location.search);
-      const businessId = queryParams.get('bid') || ''; // Default to empty string if not found
-      const startOfDay = new Date(selectedDate.setHours(0, 0, 0, 0)).getTime();
-      const endOfDay = new Date(selectedDate.setHours(23, 59, 59, 999)).getTime();
-      try {
-        const appointmentsData = await getAppointments({ business_id: businessId, date_from: startOfDay, date_to: endOfDay });
-        setAppointments(appointmentsData);
-      } catch (error) {
-        console.error("Failed to fetch appointments:", error);
-        setAppointments([]);
-      }
-    };
-
-    fetchAppointments();
-  }, [selectedDate]); // Re-fetch appointments when selectedDate changes
+  const [appointments] = useState<Appointment[]>([]);
+  
 
   useEffect(() => {
     console.log(appointments);
@@ -100,9 +82,6 @@ const TimeGrid: React.FC<TimeGridProps> = ({
           </Button>
         ))}
       </div>
-      <p className="mt-4 text-sm text-gray-600">
-        Appointments: {appointments && appointments.length > 0 ? appointments.map(appointment => `${appointment.id}: ${new Date(appointment.appt_time).toLocaleString()}, Duration: ${appointment.appt_duration} mins`).join(", ") : "No appointments found."}
-      </p>
     </>
   );
 };

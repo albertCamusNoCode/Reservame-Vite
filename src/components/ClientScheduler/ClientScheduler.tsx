@@ -4,6 +4,7 @@ import TimeGrid from "../TimeGrid/TimeGrid";
 import { Button } from "@/components/ui/button";
 import { addAppointment } from "../../data-actions/appointment";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { getAppointments } from "../../data-actions/appointment";
 
 export const ClientScheduler: FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -31,7 +32,7 @@ export const ClientScheduler: FC = () => {
   const queryParams = new URLSearchParams(window.location.search);
   const businessId = queryParams.get('bid') || ''; // Ensuring businessId is never null
 
-  const handleContinue = async () => {
+ const handleContinue = async () => {
     if (!selectedTimeSlot) {
       alert("Please select a time slot.");
       return;
@@ -51,6 +52,20 @@ export const ClientScheduler: FC = () => {
     } catch (error) {
       console.error("Failed to book appointment:", error);
       alert("Failed to book appointment.");
+    }
+  };
+
+  const fetchAppointments = async () => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const businessId = queryParams.get('bid') || ''; // Default to empty string if not found
+    const startOfDay = new Date(selectedDate.setHours(0, 0, 0, 0)).getTime();
+    const endOfDay = new Date(selectedDate.setHours(23, 59, 59, 999)).getTime();
+    try {
+      const response = await getAppointments({ business_id: businessId, date_from: startOfDay, date_to: endOfDay });
+      const appointmentsData = response; // Directly use the response, assuming it's already in the correct format
+      console.log("Fetched appointments:", appointmentsData); // Log fetched appointments
+    } catch (error) {
+      console.error("Failed to fetch appointments:", error);
     }
   };
 
@@ -107,7 +122,7 @@ export const ClientScheduler: FC = () => {
         setSelectedTimeSlot={setSelectedTimeSlot}
       />
       <div className="flex justify-center mt-6">
-        <Button className="w-full" variant="outline" onClick={handleContinue}>
+        <Button className="w-full" variant="outline" onClick={fetchAppointments}>
           Continue
         </Button>
       </div>
