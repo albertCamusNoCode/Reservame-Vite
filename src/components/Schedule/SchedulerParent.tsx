@@ -1,4 +1,4 @@
-import { SchedulerStep } from "./SchedulerStep";
+import { SchedulerStep } from "./Step 1/SchedulerStep";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { Card } from "../ui/card";
@@ -23,6 +23,9 @@ export default function SchedulerComponent() {
   return (
     <>
     <Card className="bg-white p-8 rounded-lg max-w-3xl mx-auto my-12">
+      <div>
+        
+      </div>
       <div>
       <h1 className="text-2xl font-semibold mb-6 flex justify-center">{businessPublic?.business_name} | Reservaciones</h1>
       </div>

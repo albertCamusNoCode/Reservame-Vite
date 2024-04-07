@@ -51,6 +51,16 @@ interface BusinessPublic {
 }
 export type { BusinessPublic };
 
+type Client = {
+  id: string;
+  created_at: number;
+  business_id: string;
+  phone_number: string;
+  email: string;
+  user_id: string | null;
+}
+export type { Client };
+
 type User = {
   id: string;
   email: string;
@@ -58,7 +68,7 @@ type User = {
   createdAt: Date; // Assuming created_at is a timestamp, change the type if necessary
   phone?: string; // Optional since the example response has an empty phone
   googleOauth?: string; // Optional, adjust according to actual usage
-  activeBusiness: number; // Assuming active_business is a number
+  active_business: string; // Assuming active_business is a number
 } | null;
 export type { User };
 

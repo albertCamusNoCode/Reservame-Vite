@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";// Updated import path
-import { Appointment } from "../../types"; // Updated import path
-import { getAppointments } from "../../data-actions/appointment";
+import { Appointment } from "../../../types"; // Updated import path
+import { getAppointments } from "../../../data-actions/appointment";
 
 type TimeSlot = {
   label: string;

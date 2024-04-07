@@ -2,10 +2,10 @@ import { addDays, format, startOfWeek, addWeeks } from "date-fns";
 import { useState } from "react";
 import TimeGrid from "./TimeGrid";
 import { Button } from "@/components/ui/button";
-import { addAppointment } from "../../data-actions/appointment";
+import { addAppointment } from "../../../data-actions/appointment";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Appointment, BusinessPublic } from "@/types";
-import { Card } from "../ui/card";
+import { Card } from "../../ui/card";
 
 export const SchedulerStep = ({ businessPublic, businessId }: { businessPublic: BusinessPublic | null, businessId: string }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());

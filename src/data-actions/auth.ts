@@ -28,7 +28,7 @@ export const useAuth = () => {
         createdAt: new Date(response.data.created_at),
         phone: response.data.phone || undefined,
         googleOauth: response.data.google_oauth || undefined,
-        activeBusiness: response.data.active_business,
+        active_business: response.data.active_business,
       };
       setUser(userData);
     } catch (err) {

@@ -52,7 +52,7 @@ function Dashboard() {
         </Breadcrumb>
         <Routes>
           <Route path="appointments" element={<Appointments />} />
-          <Route path="clients" element={<Clients />} />
+          <Route path="clients" element={<Clients  />} />
           <Route path="integrations" element={<Integrations />} />
           <Route path="scheduler" element={<ManageScheduler />} />
           <Route path="services" element={<Services />} />
