@@ -81,7 +81,7 @@ const Login = () => {
   const handleGoogleInit = async () => {
     setGoogleLoading(true);
     try {
-      const currentUrl = "http://localhost:3000/oauth2/callback";
+      const currentUrl = window.location.origin + "/oauth2/callback";
       const { authUrl } = await initiateGoogleLogin(currentUrl);
       if (authUrl) {
         window.location.href = authUrl;

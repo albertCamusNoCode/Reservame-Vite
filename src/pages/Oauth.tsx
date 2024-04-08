@@ -12,7 +12,7 @@ function OAuth2Callback() {
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get('code');
       if (code) {
-        const redirectUri = "http://localhost:3000/oauth2/callback";
+        const redirectUri = window.location.origin + "/oauth2/callback";
         try {
           const { token } = await continueWithGoogle(code, redirectUri);
           if (token) {

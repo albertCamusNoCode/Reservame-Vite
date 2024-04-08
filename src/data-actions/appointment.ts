@@ -3,20 +3,29 @@ import { Appointment } from "../types";
 
 const API_BASE_URL = "https://reservame.mx/api:atCKEPpl";
 
-export const getAppointments = async ({ business_id, date_from, date_to }: {
-  business_id: string,
-  date_from?: number,
-  date_to?: number
+export const getAppointments = async (options: {
+  business_id: string;
+  date_from?: string | null;
+  date_to?: string | null;
+  sort?: Record<string, any>;
+  search?: Record<string, any>;
+  page?: number;
+  per_page?: number;
 }): Promise<Appointment[]> => {
-  const response = await axios.get(`${API_BASE_URL}/appointments`, {
-    params: {
-      business_id,
-      date_from,
-      date_to
-    }
-  });
+  const { business_id, date_from = null, date_to = null, sort = {}, search = {}, page = null, per_page = null } = options;
+  const params = {
+    business_id,
+    date_from,
+    date_to,
+    sort,
+    search,
+    page,
+    per_page
+  };
+  const response = await axios.get(`${API_BASE_URL}/appointments`, { params });
   return response.data;
 }
+
 export const addAppointment = async (appointmentData: {
   business_id: string;
   client_phone: string;

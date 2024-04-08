@@ -60,7 +60,7 @@ const Signup = () => {
   const handleGoogleInit = async () => {
     setGoogleLoading(true);
     try {
-      const redirectUri = "http://localhost:3000/oauth2/callback";
+      const redirectUri = window.location.origin + "/oauth2/callback";
       const { authUrl } = await initiateGoogleLogin(redirectUri); // Use directly without calling useAuth again
       if (authUrl) {
         window.location.assign(authUrl);

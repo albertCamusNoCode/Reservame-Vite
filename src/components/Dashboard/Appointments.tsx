@@ -16,22 +16,50 @@ import { Appointment } from "@/types";
 function Appointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const { user } = useAuth(); // Moved useAuth hook call to the top level
+  const [page, setPage] = useState(1); // For pagination
+  const [perPage, setPerPage] = useState(10); // Number of items per page
+  const [searchQuery, setSearchQuery] = useState(''); // For search
+  const [sort, setSort] = useState<{ field: string; direction: 'asc' | 'desc' }>({ field: 'date', direction: 'asc' }); // For sorting
 
   useEffect(() => {
+    let isMounted = true; // Flag to prevent state update if the component is unmounted
+    const cachedAppointments = sessionStorage.getItem('cachedAppointments');
     const fetchAppointments = async () => {
-      try {
-        const business = {business_id: user?.active_business || ''};
-        console.log("Fetching appointments for business:", business);
-        const appointmentsData = await getAppointments(business);
-        console.log("Fetched appointments:", appointmentsData);
-        setAppointments(appointmentsData);
-      } catch (error) {
-        console.error("Failed to fetch appointments:", error);
+      if (cachedAppointments) {
+        console.log("Using cached appointments");
+        setAppointments(JSON.parse(cachedAppointments));
+      } else {
+        try {
+          const business = {business_id: user?.active_business || ''};
+          console.log("Fetching appointments for business:", business);
+          const appointmentsData = await getAppointments({
+            business_id: user?.active_business || '',
+            date_from: null, // Adjust based on your requirements
+            date_to: null, // Adjust based on your requirements
+            sort: { [sort.field]: sort.direction },
+            search: searchQuery ? { query: searchQuery } : undefined,
+            page,
+            per_page: perPage,
+          });
+          console.log("Fetched appointments:", appointmentsData);
+          if (isMounted) {
+            setAppointments(appointmentsData);
+            sessionStorage.setItem('cachedAppointments', JSON.stringify(appointmentsData)); // Cache the fetched appointments
+          }
+        } catch (error) {
+          console.error("Failed to fetch appointments:", error);
+        }
       }
     };
 
-    fetchAppointments();
-  }, [user]); // Added user as a dependency
+    if (!cachedAppointments || !user) { // Fetch appointments if not cached or user changes
+      fetchAppointments();
+    }
+
+    return () => {
+      isMounted = false; // Set the flag to false when the component unmounts
+    };
+  }, [user, page, perPage, searchQuery, sort]); // Updated dependency array
 
   const table = useReactTable({
     data: appointments,
@@ -51,10 +79,25 @@ function Appointments() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Appointments</CardTitle>
-        <CardDescription>
-          View and manage your appointments.
-        </CardDescription>
+        <div className="flex justify-between items-center">
+          <div>
+            <CardTitle>Appointments</CardTitle>
+            <CardDescription>
+              View and manage your appointments.
+            </CardDescription>
+          </div>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="input" // Add appropriate classes for styling
+          />
+          {/* Example sorting button for date */}
+          <button onClick={() => setSort({ field: 'date', direction: sort.direction === 'asc' ? 'desc' : 'asc' })}>
+            Sort by Date {sort.direction === 'asc' ? '🔼' : '🔽'}
+          </button>
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
@@ -110,7 +153,7 @@ function Appointments() {
             </PaginationItem>
             {table.getPageCount() > 1 && Array.from(Array(table.getPageCount()).keys()).map(pageIndex => (
               <PaginationItem key={pageIndex}>
-                <PaginationLink href="#" isActive={table.getState().pagination.pageIndex === pageIndex} onClick={() => table.setPageIndex(pageIndex)}>
+                <PaginationLink href="#" isActive={table.getState().pagination.pageIndex === pageIndex} onClick={(e) => { e.preventDefault(); setPage(pageIndex + 1); }}>
                   {pageIndex + 1}
                 </PaginationLink>
               </PaginationItem>
