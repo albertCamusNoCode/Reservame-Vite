@@ -31,13 +31,15 @@ export type { Business };
 
 interface Appointment {
   id?: string;
-  created_at?: number;
+  created_at: number;
   business_id: string;
-  client_phone?: string;
-  client_id?: string;
-  appt_time: number;
+  client_phone: string;
+  client_id?: string | null;
+  appt_time?: number | null;
   appt_duration: number;
   business_service_id: string;
+  user_id?: string | null;
+  _client?: Client;
 }
 export type { Appointment };
 
@@ -57,7 +59,8 @@ type Client = {
   business_id: string;
   phone_number: string;
   email: string;
-  user_id: string | null;
+  user_id?: string | null;
+  client_name: string;
 }
 export type { Client };
 
@@ -86,4 +89,46 @@ interface GoogleContinueLoginResponse {
 
 export type { GoogleInitiateLoginResponse, GoogleContinueLoginResponse };
 
+interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
+  className?: string;
+}
+
+interface TableHeaderProps extends React.HTMLAttributes<HTMLTableSectionElement> {
+  className?: string;
+}
+
+interface TableBodyProps extends React.HTMLAttributes<HTMLTableSectionElement> {
+  className?: string;
+}
+
+interface TableFooterProps extends React.HTMLAttributes<HTMLTableSectionElement> {
+  className?: string;
+}
+
+interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
+  className?: string;
+}
+
+interface TableHeadProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
+  className?: string;
+}
+
+interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+  className?: string;
+}
+
+interface TableCaptionProps extends React.HTMLAttributes<HTMLTableCaptionElement> {
+  className?: string;
+}
+
+export type {
+  TableProps,
+  TableHeaderProps,
+  TableBodyProps,
+  TableFooterProps,
+  TableRowProps,
+  TableHeadProps,
+  TableCellProps,
+  TableCaptionProps,
+};
 

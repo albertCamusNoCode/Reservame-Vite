@@ -154,4 +154,3 @@ export const useAuth = () => {
   return { user, loading, error, setAuthToken, continueWithGoogle, initiateGoogleLogin, signup, login, logout, isLoggedIn: !!cookies._rsrvme_jwt };
 };
 
-

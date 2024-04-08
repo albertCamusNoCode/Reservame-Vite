@@ -5,8 +5,8 @@ const API_BASE_URL = "https://reservame.mx/api:atCKEPpl";
 
 export const getAppointments = async ({ business_id, date_from, date_to }: {
   business_id: string,
-  date_from: number,
-  date_to: number
+  date_from?: number,
+  date_to?: number
 }): Promise<Appointment[]> => {
   const response = await axios.get(`${API_BASE_URL}/appointments`, {
     params: {
