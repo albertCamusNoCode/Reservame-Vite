@@ -86,6 +86,11 @@ function Appointments() {
               View and manage your appointments.
             </CardDescription>
           </div>
+          
+          {/* Example sorting button for date */}
+          
+        </div>
+        <div>
           <input
             type="text"
             placeholder="Search..."
@@ -93,11 +98,7 @@ function Appointments() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="input" // Add appropriate classes for styling
           />
-          {/* Example sorting button for date */}
-          <button onClick={() => setSort({ field: 'date', direction: sort.direction === 'asc' ? 'desc' : 'asc' })}>
-            Sort by Date {sort.direction === 'asc' ? '🔼' : '🔽'}
-          </button>
-        </div>
+          </div>
       </CardHeader>
       <CardContent>
         <Table>
@@ -106,8 +107,11 @@ function Appointments() {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id}>
-                    <div className={cn("flex items-center space-x-2")}>
+                    <div className={cn("flex items-center gap-2 space-x-2")}>
                       {flexRender(header.column.columnDef.header, header.getContext())}
+                      <button onClick={() => setSort({ field: header.column.columnDef.header, direction: sort.direction === 'asc' ? 'desc' : 'asc' })}>
+                      {sort.direction === 'asc' ? '🔼' : '🔽'}
+          </button>
                     </div>
                   </TableHead>
                 ))}

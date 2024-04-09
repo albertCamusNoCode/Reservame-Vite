@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate, Routes, Route, useLocation, Link } from "react-router-dom";
 import SideNav from "@/components/Dashboard/SideNav";
 import Appointments from "@/components/Dashboard/Appointments";
-import Clients from "@/components/Dashboard/Clients";
+import ClientsPage from "@/components/Dashboard/Clients/ClientsPage";
 import Integrations from "@/components/Dashboard/Integrations.tsx";
 import ManageScheduler from "@/components/Dashboard/ManageScheduler";
 import Services from "@/components/Dashboard/Services";
@@ -52,7 +52,7 @@ function Dashboard() {
         </Breadcrumb>
         <Routes>
           <Route path="appointments" element={<Appointments />} />
-          <Route path="clients" element={<Clients  />} />
+          <Route path="clients" element={<ClientsPage  />} />
           <Route path="integrations" element={<Integrations />} />
           <Route path="scheduler" element={<ManageScheduler />} />
           <Route path="services" element={<Services />} />
