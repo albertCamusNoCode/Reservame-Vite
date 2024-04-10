@@ -11,31 +11,32 @@ export default function ClientTable() {
   const [data, setData] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = async () => {
-    const cacheKey = `clients-${businessId}`;
-    const cachedData = localStorage.getItem(cacheKey);
-    if (cachedData) {
-      setData(JSON.parse(cachedData));
-      setLoading(false);
-      return;
-    }
-
-    try {
-      console.log(user);
-      console.log(`Fetching clients for businessId: ${businessId} with authToken: ${authToken}`);
-      const response = await getClients(businessId, authToken || '');
-      console.log("Response from getClients:", response);
-      localStorage.setItem(cacheKey, JSON.stringify(response.items));
-      setData(response.items);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    let isMounted = true; // Flag to prevent state update if the component is unmounted
+    const cachedClients = sessionStorage.getItem('cachedClients');
+    const fetchData = async () => {
+      if (cachedClients) {
+        console.log("Using cached clients");
+        setData(JSON.parse(cachedClients).items);
+      } else {
+        try {
+          const response = await getClients(businessId, authToken || '');
+          if (isMounted) {
+            setData(response.items);
+            sessionStorage.setItem('cachedClients', JSON.stringify({ businessId, items: response.items })); // Cache the fetched clients
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+      setLoading(false);
+    };
+
     fetchData();
+
+    return () => {
+      isMounted = false; // Set the flag to false when the component unmounts
+    };
   }, [businessId, authToken]); // Depend on businessId and authToken to refetch if these change
 
   if (loading) {

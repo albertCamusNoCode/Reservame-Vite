@@ -54,6 +54,7 @@ export const useAuth = () => {
     removeCookie("_rsrvme_jwt", { path: '/' });
     setUser(null); // Clear user data upon logout
     delete axios.defaults.headers.common['Authorization']; // Remove the Authorization header
+    sessionStorage.clear(); // Clear all sessionStorage data
   };
 
   const signup = async (email: string, password: string, name: string) => {
