@@ -1,61 +1,50 @@
-import { clientData } from "@/data-actions/clientData";
+import { getClients } from "@/data-actions/client";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { Client } from "@/types";
 import { useEffect, useState } from "react";
-
-async function getData(): Promise<Client[]> {
-  // Fetch data from your API here and return it.
-  return clientData; // Simply returning fake data
-}
-
-// async function deleteData(id: string): Promise<Employee[]> {
-//   // Delete from api.
-//   const index = employeeData.findIndex((value) => value.id === id)
-//   employeeData.splice(index, 1)
-//   return employeeData // Simply returning fake data
-// }
+import { useAuth } from "@/data-actions/auth";
 
 export default function ClientTable() {
+  const { user, authToken } = useAuth();
+  const businessId = user?.active_business || '';
   const [data, setData] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const result: Client[] = await getData();
-        setData(result);
-      } catch (error) {
-        // Handle error
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
+  const fetchData = async () => {
+    const cacheKey = `clients-${businessId}`;
+    const cachedData = localStorage.getItem(cacheKey);
+    if (cachedData) {
+      setData(JSON.parse(cachedData));
+      setLoading(false);
+      return;
     }
 
+    try {
+      console.log(user);
+      console.log(`Fetching clients for businessId: ${businessId} with authToken: ${authToken}`);
+      const response = await getClients(businessId, authToken || '');
+      console.log("Response from getClients:", response);
+      localStorage.setItem(cacheKey, JSON.stringify(response.items));
+      setData(response.items);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
-  }, []);
+  }, [businessId, authToken]); // Depend on businessId and authToken to refetch if these change
 
   if (loading) {
-    // Render a loading indicator or message
     return <div>Loading...</div>;
   }
-
-  //  async function deleteRow(id:string) {
-  //   console.log("delete this row")
-  //     try {
-  //       const result: Employee[] = await deleteData(id);
-  //       setData(result);
-  //     } catch (error) {
-  //       // Handle error
-  //       console.error('Error deleting data:', error);
-  //     }
-  //   }
 
   return (
     <div className="container mx-auto py-10">
       <DataTable columns={columns} data={data} />
-      {/* <DataTable columns={columns} data={data} deleteRow={deleteRow} /> */}
     </div>
   );
 }

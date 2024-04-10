@@ -25,7 +25,7 @@ export const useAuth = () => {
         id: response.data.id,
         email: response.data.email,
         name: response.data.name,
-        createdAt: new Date(response.data.created_at),
+        createdAt: response.data.created_at,
         phone: response.data.phone || undefined,
         googleOauth: response.data.google_oauth || undefined,
         active_business: response.data.active_business,
@@ -151,6 +151,6 @@ export const useAuth = () => {
     }
   };
 
-  return { user, loading, error, setAuthToken, continueWithGoogle, initiateGoogleLogin, signup, login, logout, isLoggedIn: !!cookies._rsrvme_jwt };
+  return { user, loading, error, setAuthToken, continueWithGoogle, initiateGoogleLogin, signup, login, logout, isLoggedIn: !!cookies._rsrvme_jwt, authToken: cookies._rsrvme_jwt };
 };
 

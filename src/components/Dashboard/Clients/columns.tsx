@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
-import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<Client>[] = [
   {
@@ -75,10 +74,14 @@ export const columns: ColumnDef<Client>[] = [
   },
   {
     accessorKey: "phone_number",
+    header: "Phone Number",  
+  },
+  {
+    accessorKey: "appt_time",
     header: ({ column }) => {
       return (
-        <div className="flex justify-between py-2 text-left">
-          Phone Number
+        <div className="flex justify-between py-2 text-left ">
+          Last Appointment
           <HiArrowsUpDown
             className="w-4 h-4 ml-2 cursor-pointer"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -86,7 +89,12 @@ export const columns: ColumnDef<Client>[] = [
         </div>
       );
     },
-    
+    cell: ({ row }) => (
+      <div className="w-[80px]">{row.getValue("appt_time")}</div>
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "created_at",
@@ -104,42 +112,6 @@ export const columns: ColumnDef<Client>[] = [
     cell: ({ row }) => (
       <div className="w-[80px]">{row.getValue("created_at")}</div>
     ),
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => {
-      return (
-        <div className="flex justify-between py-2 text-left">
-          Status
-          <HiArrowsUpDown
-            className="w-4 h-4 ml-2 cursor-pointer"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          />
-        </div>
-      );
-    },
-    cell: ({ row }) => {
-      const { status } = row.original;
-      const colors = {
-        active: "bg-green-500",
-        vacation: "bg-yellow-500",
-        "other leave": "bg-yellow-500",
-        left: "bg-red-500",
-      };
-
-      return (
-        <Badge
-          variant="outline"
-          className="text-white justify-center w-3/4"
-          style={{ backgroundColor: colors[status] }}
-        >
-          {status}
-        </Badge>
-      );
-    },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },

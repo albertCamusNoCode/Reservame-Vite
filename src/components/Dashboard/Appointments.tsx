@@ -30,8 +30,6 @@ function Appointments() {
         setAppointments(JSON.parse(cachedAppointments));
       } else {
         try {
-          const business = {business_id: user?.active_business || ''};
-          console.log("Fetching appointments for business:", business);
           const appointmentsData = await getAppointments({
             business_id: user?.active_business || '',
             date_from: null, // Adjust based on your requirements

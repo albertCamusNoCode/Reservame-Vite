@@ -1,19 +1,21 @@
 import axios from "axios";
 import { Client } from "../types";
-import { useCookies } from "react-cookie"; // Import useCookies from react-cookie
+// Removed the import for useCookies as it's no longer used here
 
 const API_BASE_URL = "https://reservame.mx/api:atCKEPpl";
 
-export const getClientsByBusinessId = async (businessId: string): Promise<Client[]> => {
-  const [cookies] = useCookies(['_rsrvme_jwt']); // Use useCookies to access the cookies
+export const getClients = async (businessId: string, authToken: string): Promise<{items: Client[], pagination: {itemsReceived: number, curPage: number, nextPage: null | number, prevPage: null | number, offset: number}}> => {
   try {
-    const response = await axios.get<Client[]>(`${API_BASE_URL}/clients/${businessId}`, {
+    const response = await axios.get<{items: Client[], pagination: {itemsReceived: number, curPage: number, nextPage: null | number, prevPage: null | number, offset: number}}>(`${API_BASE_URL}/clients/${businessId}`, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${cookies._rsrvme_jwt}`, // Use the auth token from the cookie for authorization
+        'Authorization': `Bearer ${authToken}`, // Use the auth token passed as a parameter
       }
     });
-    return response.data;
+    return {
+      items: response.data.items,
+      pagination: response.data.pagination,
+    };
   } catch (error) {
     console.error("Error fetching clients:", error);
     throw error;

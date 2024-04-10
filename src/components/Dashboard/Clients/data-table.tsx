@@ -27,8 +27,6 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DataTableFacetedFilter } from "../Table Reusables/faceted-filter";
-import { getDropDownValues } from "@/lib/utils";
 import { DataTablePagination } from "../Table Reusables/pagination-controls";
 import { Separator } from "@/components/ui/separator";
 
@@ -83,7 +81,7 @@ export function DataTable<TData, TValue>({
 
     //Control pagination. Default is 10
     initialState: {
-      pagination: { pageSize: 5 },
+      pagination: { pageSize: 10 },
     },
 
     //This can be added to insert custom functions, accessible :table.options.meta.methodName
@@ -109,15 +107,6 @@ export function DataTable<TData, TValue>({
             }
             className="max-w-sm"
           />
-          <div>
-            {table.getColumn("status") && (
-              <DataTableFacetedFilter
-                column={table.getColumn("status")}
-                title="Status"
-                options={getDropDownValues(data, "status")}
-              />
-            )}
-          </div>
 
           {isFiltered && (
             <Button

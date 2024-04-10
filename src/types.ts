@@ -61,6 +61,7 @@ type Client = {
   email: string;
   user_id?: string | null;
   client_name: string;
+  appt_time: number;
   status:  "active" | "vacation" | "other leave" | "left",
 }
 export type { Client };

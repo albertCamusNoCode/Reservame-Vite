@@ -1,15 +1,17 @@
-import { getBusinessPublicRecordById } from "@/data-actions/business.public";
 import { useEffect, useState } from "react";
-import { BusinessPublic } from "@/types";
 import { Button } from "@/components/ui/button";
+import { getClients } from "@/data-actions/client";
+import { useAuth } from "@/data-actions/auth";
 
 function Test() {
-    const [businessPublic, setBusinessPublic] = useState<BusinessPublic | null>(null);
+  const { authToken, user } = useAuth();
+    const [response, setResponse] = useState<any>(null);
 
   useEffect(() => {
-    getBusinessPublicRecordById("a450935f-ccf6-4ee9-9bec-9be3506891ea").then((response) => {
+    console.log(authToken);
+    getClients("a450935f-ccf6-4ee9-9bec-9be3506891ea", authToken).then((response) => {
         console.log(response);
-        setBusinessPublic(response);
+     setResponse(response)
     });
   }, []);
 
@@ -22,18 +24,8 @@ function Test() {
     <Button variant="secondary">Test</Button>
 
     <div>
-      {businessPublic ? (
-        <div>
-          <p>ID: {businessPublic.id}</p>
-          <p>Business ID: {businessPublic.business_id}</p>
-          <p>Days Open: {businessPublic.days_open.join(', ')}</p>
-          <p>Appointment Interval: {businessPublic.appt_interval}</p>
-          <p>Is Active: {businessPublic.is_active ? 'Yes' : 'No'}</p>
-          <p>Business Name: {businessPublic.business_name}</p>
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}
+    <p>{JSON.stringify(user)}</p>
+          <p>{JSON.stringify(response)}</p>
     </div>
     </>
   );
