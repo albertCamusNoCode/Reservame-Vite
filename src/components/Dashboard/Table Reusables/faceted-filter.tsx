@@ -36,10 +36,10 @@ export function DataTableFacetedFilter<TData, TValue>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 border-dashed">
+        <Button variant="outline" size="sm">
           <RiFilterLine className="w-4 h-4 mr-2" />
           {title}
-          {/* {selectedValues?.size > 0 && 
+          {selectedValues?.size > 0 && 
               <div className="space-x-1 lg:flex">
                 {(
                     options
@@ -55,7 +55,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                       ))
                   )  }
               </div>
-          } */}
+          }
         </Button>
       </PopoverTrigger>
       {selectedValues?.size > 0 && (

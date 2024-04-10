@@ -1,9 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Employee } from "../../../types";
+import { Client } from "../../../types";
 import {
-  HiArrowsUpDown,
-  HiOutlineArrowLeftCircle,
-  HiOutlineArrowRightCircle,
+  HiArrowsUpDown
 } from "react-icons/hi2";
 import { RiMore2Fill } from "react-icons/ri";
 // import { MoreHorizontal } from "lucide-react"
@@ -21,9 +19,8 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { Badge } from "@/components/ui/badge";
-import { moveColumnsDown, moveColumnsUp } from "@/lib/utils";
 
-export const columns: ColumnDef<Employee>[] = [
+export const columns: ColumnDef<Client>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -44,7 +41,7 @@ export const columns: ColumnDef<Employee>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "client_name",
     header: ({ column }) => {
       return (
         <div className="flex justify-between py-2 text-left">
@@ -57,64 +54,16 @@ export const columns: ColumnDef<Employee>[] = [
       );
     },
     cell: ({ row }) => {
-      const { name } = row.original;
-      return <div className="font-medium text-left ">{name}</div>;
-    },
-    footer: ({ column, table }) => {
-      return (
-        <div className="flex flex-row gap-4">
-          <HiOutlineArrowLeftCircle
-            className="w-4 h-4 ml-2 cursor-pointer"
-            onClick={() =>
-              table.setColumnOrder(
-                moveColumnsUp(table.getAllLeafColumns(), column.id),
-              )}
-          >
-          </HiOutlineArrowLeftCircle>
-          <HiOutlineArrowRightCircle
-            className="w-4 h-4 mr-2 cursor-pointer"
-            onClick={() =>
-              table.setColumnOrder(
-                moveColumnsDown(table.getAllLeafColumns(), column.id),
-              )}
-          >
-          </HiOutlineArrowRightCircle>
-        </div>
-      );
+      const { client_name } = row.original;
+      return <div className="font-medium text-left ">{ client_name }</div>;
     },
   },
   {
     accessorKey: "email",
-    header: "Email",
-    footer: ({ column, table }) => {
-      return (
-        <div className="flex flex-row gap-4">
-          <HiOutlineArrowLeftCircle
-            className="w-4 h-4 ml-2 cursor-pointer"
-            onClick={() =>
-              table.setColumnOrder(
-                moveColumnsUp(table.getAllLeafColumns(), column.id),
-              )}
-          >
-          </HiOutlineArrowLeftCircle>
-          <HiOutlineArrowRightCircle
-            className="w-4 h-4 mr-2 cursor-pointer"
-            onClick={() =>
-              table.setColumnOrder(
-                moveColumnsDown(table.getAllLeafColumns(), column.id),
-              )}
-          >
-          </HiOutlineArrowRightCircle>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "department",
     header: ({ column }) => {
       return (
         <div className="flex justify-between py-2 text-left">
-          Department
+          Email
           <HiArrowsUpDown
             className="w-4 h-4 ml-2 cursor-pointer"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -122,36 +71,29 @@ export const columns: ColumnDef<Employee>[] = [
         </div>
       );
     },
-    footer: ({ column, table }) => {
+
+  },
+  {
+    accessorKey: "phone_number",
+    header: ({ column }) => {
       return (
-        <div className="flex flex-row gap-4">
-          <HiOutlineArrowLeftCircle
+        <div className="flex justify-between py-2 text-left">
+          Phone Number
+          <HiArrowsUpDown
             className="w-4 h-4 ml-2 cursor-pointer"
-            onClick={() =>
-              table.setColumnOrder(
-                moveColumnsUp(table.getAllLeafColumns(), column.id),
-              )}
-          >
-          </HiOutlineArrowLeftCircle>
-          <HiOutlineArrowRightCircle
-            className="w-4 h-4 mr-2 cursor-pointer"
-            onClick={() =>
-              table.setColumnOrder(
-                moveColumnsDown(table.getAllLeafColumns(), column.id),
-              )}
-          >
-          </HiOutlineArrowRightCircle>
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          />
         </div>
       );
     },
     
   },
   {
-    accessorKey: "location",
+    accessorKey: "created_at",
     header: ({ column }) => {
       return (
         <div className="flex justify-between py-2 text-left ">
-          Location
+          Created Date
           <HiArrowsUpDown
             className="w-4 h-4 ml-2 cursor-pointer"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -160,30 +102,8 @@ export const columns: ColumnDef<Employee>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="w-[80px]">{row.getValue("location")}</div>
+      <div className="w-[80px]">{row.getValue("created_at")}</div>
     ),
-    footer: ({ column, table }) => {
-      return (
-        <div className="flex flex-row gap-4">
-          <HiOutlineArrowLeftCircle
-            className="w-4 h-4 ml-2 cursor-pointer"
-            onClick={() =>
-              table.setColumnOrder(
-                moveColumnsUp(table.getAllLeafColumns(), column.id),
-              )}
-          >
-          </HiOutlineArrowLeftCircle>
-          <HiOutlineArrowRightCircle
-            className="w-4 h-4 mr-2 cursor-pointer"
-            onClick={() =>
-              table.setColumnOrder(
-                moveColumnsDown(table.getAllLeafColumns(), column.id),
-              )}
-          >
-          </HiOutlineArrowRightCircle>
-        </div>
-      );
-    },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
@@ -213,32 +133,11 @@ export const columns: ColumnDef<Employee>[] = [
       return (
         <Badge
           variant="outline"
-          className={`${colors[status]} text-white justify-center w-3/4`}
+          className="text-white justify-center w-3/4"
+          style={{ backgroundColor: colors[status] }}
         >
           {status}
         </Badge>
-      );
-    },
-    footer: ({ column, table }) => {
-      return (
-        <div className="flex flex-row gap-4">
-          <HiOutlineArrowLeftCircle
-            className="w-4 h-4 ml-2 cursor-pointer"
-            onClick={() =>
-              table.setColumnOrder(
-                moveColumnsUp(table.getAllLeafColumns(), column.id),
-              )}
-          >
-          </HiOutlineArrowLeftCircle>
-          <HiOutlineArrowRightCircle
-            className="w-4 h-4 mr-2 cursor-pointer"
-            onClick={() =>
-              table.setColumnOrder(
-                moveColumnsDown(table.getAllLeafColumns(), column.id),
-              )}
-          >
-          </HiOutlineArrowRightCircle>
-        </div>
       );
     },
     filterFn: (row, id, value) => {
@@ -263,11 +162,11 @@ export const columns: ColumnDef<Employee>[] = [
               onClick={() => {
                 navigator.clipboard.writeText(employee.id);
                 toast({
-                  title: "Copy employee id",
+                  title: "Copy Client Id",
                   description: "ID copied to clipboard",
                 });
               }}
-            >
+            >Copy Id
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View employee</DropdownMenuItem>

@@ -16,6 +16,11 @@ function Test() {
   return (
     <>
     <Button variant="unclickable">Test</Button>
+    <Button variant="ghost">Test</Button>
+    <Button variant="disabled">Test</Button>
+    <Button variant="default">Test</Button>
+    <Button variant="secondary">Test</Button>
+
     <div>
       {businessPublic ? (
         <div>

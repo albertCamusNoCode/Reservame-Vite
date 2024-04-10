@@ -4,7 +4,7 @@ import TimeGrid from "./TimeGrid";
 import { Button } from "@/components/ui/button";
 import { addAppointment } from "../../../data-actions/appointment";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { Appointment, BusinessPublic } from "@/types";
+import { BusinessPublic } from "@/types";
 import { Card } from "../../ui/card";
 
 export const SchedulerStep = ({ businessPublic, businessId }: { businessPublic: BusinessPublic | null, businessId: string }) => {
@@ -12,7 +12,6 @@ export const SchedulerStep = ({ businessPublic, businessId }: { businessPublic: 
   const [currentWeek, setCurrentWeek] = useState<Date>(new Date());
   const [selectedToD, setSelectedToD] = useState<string>("All Day");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null);
-  const [appointments] = useState<Appointment[]>([]);
   const handleSelectDate = (date: Date): void => {
     setSelectedDate(date);
     setSelectedTimeSlot(null);
@@ -124,16 +123,6 @@ export const SchedulerStep = ({ businessPublic, businessId }: { businessPublic: 
         <Button className="w-full" variant={selectedTimeSlot ? "default" : "unclickable"} onClick={handleContinue}>
           Continue
         </Button>
-      </div>
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold mb-4">Appointments</h2>
-        <ul>
-          {appointments.map((appointment, index) => (
-            <li key={index} className="mb-2">
-              {format(new Date(appointment.appt_time), "EEE, MMMM do, h:mm a")} - {appointment.client_phone}
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );

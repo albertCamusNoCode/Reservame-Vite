@@ -1,12 +1,12 @@
-import { employeeData } from "@/data-actions/employeeData";
+import { clientData } from "@/data-actions/clientData";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import { Employee } from "@/types";
+import { Client } from "@/types";
 import { useEffect, useState } from "react";
 
-async function getData(): Promise<Employee[]> {
+async function getData(): Promise<Client[]> {
   // Fetch data from your API here and return it.
-  return employeeData; // Simply returning fake data
+  return clientData; // Simply returning fake data
 }
 
 // async function deleteData(id: string): Promise<Employee[]> {
@@ -17,13 +17,13 @@ async function getData(): Promise<Employee[]> {
 // }
 
 export default function ClientTable() {
-  const [data, setData] = useState<Employee[]>([]);
+  const [data, setData] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const result: Employee[] = await getData();
+        const result: Client[] = await getData();
         setData(result);
       } catch (error) {
         // Handle error
@@ -55,6 +55,7 @@ export default function ClientTable() {
   return (
     <div className="container mx-auto py-10">
       <DataTable columns={columns} data={data} />
+      {/* <DataTable columns={columns} data={data} deleteRow={deleteRow} /> */}
     </div>
   );
 }

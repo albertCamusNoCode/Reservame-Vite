@@ -70,7 +70,7 @@ const TimeGrid: React.FC<TimeGridProps> = ({
 
   const isTimeSlotBooked = (slot: TimeSlot) => {
     return appointments.some((appointment: Appointment) => {
-      const appointmentDate = new Date(appointment.appt_time);
+      const appointmentDate = new Date(appointment.appt_time || 0); // Fallback to 0 if appt_time is null/undefined
       return appointmentDate >= slot.start && appointmentDate < new Date(slot.start.getTime() + 30 * 60000);
     });
   };
@@ -84,7 +84,7 @@ const TimeGrid: React.FC<TimeGridProps> = ({
             size="sm"
             variant={
               isTimeSlotBooked(slot)
-                ? "ghost"
+                ? "disabled"
                 : selectedTimeSlot && selectedTimeSlot.getTime() === slot.start.getTime()
                 ? "default"
                 : "outline"
@@ -96,7 +96,18 @@ const TimeGrid: React.FC<TimeGridProps> = ({
           </Button>
         ))}
       </div>
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold">Appointments for {selectedDate.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}</h3>
+        <ul>
+          {appointments.map((appointment, index) => (
+            <li key={index} className="mt-2">
+              {formatTime(new Date(appointment.appt_time || 0))} - {appointment._client.client_name}
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
+    
   );
 };
 

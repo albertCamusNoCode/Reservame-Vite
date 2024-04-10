@@ -20,18 +20,10 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,11 +32,11 @@ import { getDropDownValues } from "@/lib/utils";
 import { DataTablePagination } from "../Table Reusables/pagination-controls";
 import { Separator } from "@/components/ui/separator";
 
-interface DataTableProps<TData, TValue> {
+export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  // table: TanstackTable<TData>; //HERE
 }
+
 
 export function DataTable<TData, TValue>({
   columns,
@@ -111,21 +103,12 @@ export function DataTable<TData, TValue>({
         <div className="flex gap-3">
           <Input
             placeholder="Filter by name"
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn("client_name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
+              table.getColumn("client_name")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
-          <div className="flex-col">
-            {table.getColumn("location") && (
-              <DataTableFacetedFilter
-                column={table.getColumn("location")}
-                title="Location"
-                options={getDropDownValues(data, "location")}
-              />
-            )}
-          </div>
           <div>
             {table.getColumn("status") && (
               <DataTableFacetedFilter
@@ -138,7 +121,7 @@ export function DataTable<TData, TValue>({
 
           {isFiltered && (
             <Button
-              variant="ghost"
+              variant="outline"
               onClick={() => table.resetColumnFilters()}
               className="w-40 p-2"
             >
@@ -146,46 +129,7 @@ export function DataTable<TData, TValue>({
             </Button>
           )}
         </div>
-
-        <Button
-          onClick={() => {
-            table.resetRowSelection(),
-              table.resetColumnFilters(),
-              table.resetColumnVisibility();
-              table.resetColumnOrder()
-          }}
-          variant="outline"
-          className="text-red-800 border-red-800"
-        >
-          Reset table
-        </Button>
       </div>
-
-      {/* Column selection button */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="ml-auto">
-            Select columns
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {table
-            .getAllColumns()
-            .filter((column) => column.getCanHide())
-            .map((column) => {
-              return (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              );
-            })}
-        </DropdownMenuContent>
-      </DropdownMenu>
 
       <div className="mt-3 border rounded-md">
         <Table>

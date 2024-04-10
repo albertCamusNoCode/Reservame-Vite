@@ -5,8 +5,8 @@ const API_BASE_URL = "https://reservame.mx/api:atCKEPpl";
 
 export const getAppointments = async (options: {
   business_id: string;
-  date_from?: string | null;
-  date_to?: string | null;
+  date_from?: number | null;
+  date_to?: number | null;
   sort?: Record<string, any>;
   search?: Record<string, any>;
   page?: number;
@@ -23,7 +23,8 @@ export const getAppointments = async (options: {
     per_page
   };
   const response = await axios.get(`${API_BASE_URL}/appointments`, { params });
-  return response.data;
+  // Extract and return the 'items' array from the response data
+  return response.data.items;
 }
 
 export const addAppointment = async (appointmentData: {
@@ -50,6 +51,7 @@ export const addAppointment = async (appointmentData: {
       appt_time: response.data.data.appt_time,
       appt_duration: response.data.data.appt_duration,
       business_service_id: response.data.data.business_service_id,
+      _client: response.data.data._client,
     };
     return appointmentResponse;
   } catch (error) {
@@ -63,26 +65,6 @@ export const deleteAppointment = async (appointmentId: string): Promise<void> =>
     await axios.delete(`${API_BASE_URL}/appointment/${appointmentId}`);
   } catch (error) {
     console.error("Error deleting appointment:", error);
-    throw error;
-  }
-};
-
-export const getAppointmentById = async (appointmentId: string): Promise<Appointment> => {
-  try {
-    const response = await axios.get<{data: Appointment}>(`${API_BASE_URL}/appointment/${appointmentId}`);
-    const formattedResponse: Appointment = {
-      id: response.data.data.id,
-      created_at: response.data.data.created_at,
-      business_id: response.data.data.business_id,
-      client_phone: response.data.data.client_phone,
-      client_id: response.data.data.client_id,
-      appt_time: response.data.data.appt_time,
-      appt_duration: response.data.data.appt_duration,
-      business_service_id: response.data.data.business_service_id,
-    };
-    return formattedResponse;
-  } catch (error) {
-    console.error("Error fetching appointment by ID:", error);
     throw error;
   }
 };

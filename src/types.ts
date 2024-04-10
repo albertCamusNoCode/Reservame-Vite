@@ -39,7 +39,7 @@ interface Appointment {
   appt_duration: number;
   business_service_id: string;
   user_id?: string | null;
-  _client?: Client;
+  _client: Client;
 }
 export type { Appointment };
 
@@ -61,6 +61,7 @@ type Client = {
   email: string;
   user_id?: string | null;
   client_name: string;
+  status:  "active" | "vacation" | "other leave" | "left",
 }
 export type { Client };
 
@@ -68,7 +69,7 @@ type User = {
   id: string;
   email: string;
   name: string;
-  createdAt: Date; // Assuming created_at is a timestamp, change the type if necessary
+  createdAt: string; // Assuming created_at is a timestamp, change the type if necessary
   phone?: string; // Optional since the example response has an empty phone
   googleOauth?: string; // Optional, adjust according to actual usage
   active_business: string; // Assuming active_business is a number
@@ -131,12 +132,3 @@ export type {
   TableCellProps,
   TableCaptionProps,
 };
-
-export interface Employee {
-  id: string
-  name: string
-  department: string
-  email: string
-  location: string
-  status: "active" | "vacation" | "other leave" | "left"
-}
